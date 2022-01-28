@@ -41,25 +41,23 @@ public final class SequenceSmooth {
         assert s1 != s2 : "Violation of: s1 is not s2";
         assert s1.length() >= 1 : "Violation of: |s1| >= 1";
 
-        //****** All these methods are instance methods
-        int x = s1.length();
-        s2.clear();
-        System.out.println(x + "\n this is iterative");
+        //******All these methods are instance methods
+        
+        Sequence<Integer> s2 = new Sequence1L<>();
+      int pos = 0;
 
-        if (x != 1) {
-            for (int i = 0; i + 1 < x; i++) {
-                int temp1 = s1.entry(i);
-                int temp2 = s1.entry(i + 1);
-                int temp3 = (temp1 + temp2) / 2;
-                s2.add(i, temp3);
-            }
-        }
-        //we may use method: Entry
-        // only use add, remove, length methods
+      if (s1.length() == 1) {
+          return s2;
+      } else {
+          double first = s1.remove(0);
+          double second = s1.entry(1);
+          double avg = (first + second) / 2.0;
 
-        System.out.print(s1);
-        System.out.print(s2);
-    }
+          s2.add(pos, (int) avg);
+          pos++;
+
+          smooth(s1);
+      }
 
     /**
      * Smooths a given {@code Sequence<Integer>}.
@@ -86,48 +84,21 @@ public final class SequenceSmooth {
         assert s1.length() >= 1 : "Violation of: |s1| >= 1";
 
         //****** All these methods are instance methods
+        Sequence<Integer> seq = new Sequence1L<>();
 
-        s2.clear();
-        int j = 0;
-        if (s1.length() != 1) {
-            System.out.println("this is recursive");
-            int temp1 = s1.remove(0);
-            int temp2 = s1.remove(0);
-            int temp3 = (temp1 + temp2) / 2;
-            //add value to s2
+        if (s1.length() == 1) {
+            s2.transferFrom(seq);
+        } else {
+            for (int i = 0; i < s1.length() - 1; i++) {
+                double first = s1.entry(i);
+                double second = s1.entry(i + 1);
+                double avg = (first + second) / 2.0;
 
-            smooth2(s1, s2);
-            s2.add(0, temp3);
-            s1.add(0, temp2);
-            //restore s1
-            //  s1.add(0, temp2);
+                seq.add(i, (int) avg);
+            }
         }
-        //we may use method: Entry
-        // only use add, remove, length methods
-
-        System.out.print(s1);
-        System.out.print(s2);
+        s2.transferFrom(seq);
     }
 
-    public static void main(String[] args) {
-        SimpleWriter out = new SimpleWriter1L();
-
-        out.println("HellloWorld!");
-        Sequence<Integer> s1 = new Sequence1L<>();
-        Sequence<Integer> s2 = new Sequence1L<>();
-
-        //sequence 1
-        //  s1.add(0, Integer.MAX_VALUE);
-        //  s1.add(1, Integer.MIN_VALUE);
-        s1.add(0, 7);
-        s1.add(1, 23);
-        //s1.add(2, 2);
-        //s1.add(3, 8);
-
-        //sequence 2
-        s2.add(0, 1);
-        s2.add(1, 2);
-        smooth2(s1, s2);
-    }
 
 }
