@@ -38,6 +38,8 @@ public class NaturalNumber3 extends NaturalNumberSecondary {
 
         this.rep = String.valueOf(0);
 
+        //what is the convention????
+        //what is a correspondence?????
     }
 
     /*
@@ -48,7 +50,7 @@ public class NaturalNumber3 extends NaturalNumberSecondary {
      * No-argument constructor.
      */
     public NaturalNumber3() {
-        this.createNewRep();
+        this.rep = "";
     }
 
     /**
@@ -59,10 +61,12 @@ public class NaturalNumber3 extends NaturalNumberSecondary {
      */
     public NaturalNumber3(int i) {
         assert i >= 0 : "Violation of: i >= 0";
+        if (i == 0) {
+            this.rep = "";
+        } else {
+            this.rep = Integer.toString(i);
 
-        // TODO - fill in body
-        //what does this method suppose to do???
-
+        }
     }
 
     /**
@@ -75,8 +79,11 @@ public class NaturalNumber3 extends NaturalNumberSecondary {
         assert s != null : "Violation of: s is not null";
         assert s.matches("0|[1-9]\\d*") : ""
                 + "Violation of: there exists n: NATURAL (s = TO_STRING(n))";
-
-        // TODO - fill in body
+        if (s.equals("0")) {
+            this.rep = "";
+        } else {
+            this.rep = s;
+        }
 
     }
 
@@ -88,6 +95,11 @@ public class NaturalNumber3 extends NaturalNumberSecondary {
      */
     public NaturalNumber3(NaturalNumber n) {
         assert n != null : "Violation of: n is not null";
+        if (n.isZero()) {
+            this.rep = "";
+        } else {
+            this.rep = n.toString();
+        }
 
     }
 
