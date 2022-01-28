@@ -24,6 +24,7 @@ public final class HelloWorld {
     public static void main(String[] args) {
         SimpleWriter out = new SimpleWriter1L();
         out.println("Hello World!");
+        out.println("this is only to test the svn and see if code run on client machine");
         out.close();
     }
 
