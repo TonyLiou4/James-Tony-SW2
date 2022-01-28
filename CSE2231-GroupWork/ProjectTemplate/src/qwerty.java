@@ -6,12 +6,12 @@ import components.simplewriter.SimpleWriter1L;
  *
  * @author P. Bucci
  */
-public final class HelloWorld {
+public final class qwerty {
 
     /**
      * Default constructor--private to prevent instantiation.
      */
-    private HelloWorld() {
+    private qwerty() {
         // no code needed here
     }
 
