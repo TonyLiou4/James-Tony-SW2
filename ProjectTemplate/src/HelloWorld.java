@@ -24,7 +24,7 @@ public final class HelloWorld {
     public static void main(String[] args) {
         SimpleWriter out = new SimpleWriter1L();
         out.println("Hello World!");
-        out.println("fghyjmnbvcfghyjmnbvfghjmnbghjk,m nbhjkl");
+        out.println("gtyhjhvcfgtyhjnbvghj");
         out.close();
     }
 
