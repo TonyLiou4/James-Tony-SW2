@@ -22,6 +22,14 @@ public class NaturalNumber3 extends NaturalNumberSecondary {
     /*
      * Private members --------------------------------------------------------
      */
+    
+    //treshtrsdhstehrsth
+    //gresgresh
+    //trshtrshtrs
+    ///htrshtrshtrshtrs
+   // h/trsdhtrshtrshtrshtrsh
+    //htrshtrshtsry/
+    //htrshtrshtrshtrshtrshtrshtrshtrsh/trshtrshtrshtrshtrs
 
     /**
      * Representation of {@code this}.
