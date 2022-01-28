@@ -104,6 +104,19 @@ public abstract class NaturalNumberTest {
 
     // TODO - add test cases for four constructors, multiplyBy10, divideBy10, isZero
 
+    
+    
+    /*
+     * 
+     * 
+     * these are all untested codes!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * 
+     * 
+     * 
+     * 
+     * 
+     * qq
+     */
     /*
      * Test cases for the first empty constructor
      */
