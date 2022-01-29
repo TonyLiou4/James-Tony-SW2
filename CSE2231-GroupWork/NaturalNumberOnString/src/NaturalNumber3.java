@@ -146,8 +146,13 @@ public class NaturalNumber3 extends NaturalNumberSecondary {
         assert 0 <= k : "Violation of: 0 <= k";
         assert k < RADIX : "Violation of: k < 10";
 
+        System.out.println("before: " + this.rep);
+        if (this.rep.length() > 0 && k > 0) {
+            this.rep = this.rep + String.valueOf(k);
+        }
+        System.out.println("after: " + this.rep);
         //this.rep is a string
-        this.rep = this.rep + String.valueOf(k);
+
         //does this work for every test case?
 
     }
@@ -155,8 +160,9 @@ public class NaturalNumber3 extends NaturalNumberSecondary {
     @Override
     public final int divideBy10() {
         int result = 0;
-        if (!this.isZero()) {
-            result = (this.rep).charAt((this.rep).length() - 1);
+        if (!(this.rep.length() == 0)) {
+            result = (this.rep).charAt(this.rep.length() - 1);
+            this.rep = this.rep.substring(this.rep.length() - 1);
         }
         return result;
     }
@@ -164,7 +170,7 @@ public class NaturalNumber3 extends NaturalNumberSecondary {
     @Override
     public final boolean isZero() {
 
-        return this.rep.isBlank();
+        return this.rep.length() == 0;
         //ask if we are allow to use codes from java libarary
     }
 

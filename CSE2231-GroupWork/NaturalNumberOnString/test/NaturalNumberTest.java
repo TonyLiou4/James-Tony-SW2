@@ -250,8 +250,10 @@ public abstract class NaturalNumberTest {
     public void testMultiBy10_1() {
 
         //  Set up variables and call method under test
-        NaturalNumber test = this.constructorTest(0);
-        NaturalNumber expected = this.constructorRef();
+        NaturalNumber test = this.constructorTest(10);
+        NaturalNumber expected = this.constructorRef(100);
+
+        test.multiplyBy10(0);
 
         //  Assert that values of variables match expectations
 

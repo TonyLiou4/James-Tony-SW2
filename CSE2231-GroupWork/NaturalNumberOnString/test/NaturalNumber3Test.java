@@ -1,4 +1,5 @@
 import components.naturalnumber.NaturalNumber;
+import components.naturalnumber.NaturalNumber1L;
 
 /**
  * Customized JUnit test fixture for {@code NaturalNumber3}.
@@ -11,7 +12,7 @@ public class NaturalNumber3Test extends NaturalNumberTest {
         // TODO - fill in body
 
         // This line added just to make the component compilable.
-        return null;
+        return new NaturalNumber3();
     }
 
     @Override
@@ -20,7 +21,7 @@ public class NaturalNumber3Test extends NaturalNumberTest {
         // TODO - fill in body
 
         // This line added just to make the component compilable.
-        return null;
+        return new NaturalNumber3(i);
     }
 
     @Override
@@ -29,7 +30,7 @@ public class NaturalNumber3Test extends NaturalNumberTest {
         // TODO - fill in body
 
         // This line added just to make the component compilable.
-        return null;
+        return new NaturalNumber3(s);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class NaturalNumber3Test extends NaturalNumberTest {
         // TODO - fill in body
 
         // This line added just to make the component compilable.
-        return null;
+        return new NaturalNumber3(n);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class NaturalNumber3Test extends NaturalNumberTest {
         // TODO - fill in body
 
         // This line added just to make the component compilable.
-        return null;
+        return new NaturalNumber1L();
     }
 
     @Override
@@ -56,7 +57,7 @@ public class NaturalNumber3Test extends NaturalNumberTest {
         // TODO - fill in body
 
         // This line added just to make the component compilable.
-        return null;
+        return new NaturalNumber1L(i);
     }
 
     @Override
@@ -65,7 +66,7 @@ public class NaturalNumber3Test extends NaturalNumberTest {
         // TODO - fill in body
 
         // This line added just to make the component compilable.
-        return null;
+        return new NaturalNumber1L(s);
     }
 
     @Override
@@ -74,7 +75,7 @@ public class NaturalNumber3Test extends NaturalNumberTest {
         // TODO - fill in body
 
         // This line added just to make the component compilable.
-        return null;
+        return new NaturalNumber1L(n);
     }
 
 }
