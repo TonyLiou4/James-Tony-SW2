@@ -280,9 +280,9 @@ public abstract class NaturalNumberTest {
     public void testMultiBy10_3() {
 
         //  Set up variables and call method under test
-        int y = Integer.MAX_VALUE;
-        NaturalNumber test = this.constructorTest(y);
-        NaturalNumber expected = this.constructorRef(y + "0");
+        int maxVal = Integer.MAX_VALUE;
+        NaturalNumber test = this.constructorTest(maxVal);
+        NaturalNumber expected = this.constructorRef(maxVal + "0");
 
         //  Assert that values of variables match expectations
 
@@ -296,12 +296,37 @@ public abstract class NaturalNumberTest {
     public void testDivBy10_1() {
 
         //  Set up variables and call method under test
-        int y = Integer.MAX_VALUE;
-        NaturalNumber test = this.constructorTest(y);
+        int maxVal = Integer.MAX_VALUE;
+        NaturalNumber test = this.constructorTest(maxVal);
         NaturalNumber expected = this.constructorRef(7);
 
         //  Assert that values of variables match expectations
 
         assertEquals(expected, test);
     }
+
+    @Test
+    public void testDivBy10_2() {
+
+        //  Set up variables and call method under test
+        NaturalNumber test = this.constructorTest(0);
+        NaturalNumber expected = this.constructorRef();
+
+        //  Assert that values of variables match expectations
+
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testDivBy10_3() {
+
+        //  Set up variables and call method under test
+        NaturalNumber test = this.constructorTest("98765432123456789");
+        NaturalNumber expected = this.constructorRef(9);
+
+        //  Assert that values of variables match expectations
+
+        assertEquals(expected, test);
+    }
+
 }
