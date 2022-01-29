@@ -104,17 +104,15 @@ public abstract class NaturalNumberTest {
 
     // TODO - add test cases for four constructors, multiplyBy10, divideBy10, isZero
 
-    
-    
     /*
-     * 
-     * 
+     *
+     *
      * these are all untested codes!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * 
-     * 
-     * 
-     * 
-     * 
+     *
+     *
+     *
+     *
+     *
      * qq
      */
     /*
@@ -267,8 +265,8 @@ public abstract class NaturalNumberTest {
     public void testMultiBy10_2() {
 
         //  Set up variables and call method under test
-        NaturalNumber test = this.constructorTest(1234567);
-        NaturalNumber expected = this.constructorRef(1234567);
+        NaturalNumber test = this.constructorTest(123456);
+        NaturalNumber expected = this.constructorRef(1234560);
 
         //  Assert that values of variables match expectations
 
@@ -284,7 +282,7 @@ public abstract class NaturalNumberTest {
         //  Set up variables and call method under test
         int y = Integer.MAX_VALUE;
         NaturalNumber test = this.constructorTest(y);
-        NaturalNumber expected = this.constructorRef(y);
+        NaturalNumber expected = this.constructorRef(y + "0");
 
         //  Assert that values of variables match expectations
 
@@ -300,7 +298,7 @@ public abstract class NaturalNumberTest {
         //  Set up variables and call method under test
         int y = Integer.MAX_VALUE;
         NaturalNumber test = this.constructorTest(y);
-        NaturalNumber expected = this.constructorRef(y);
+        NaturalNumber expected = this.constructorRef(7);
 
         //  Assert that values of variables match expectations
 
