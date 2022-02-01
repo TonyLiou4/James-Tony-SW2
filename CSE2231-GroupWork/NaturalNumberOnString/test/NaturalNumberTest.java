@@ -105,26 +105,40 @@ public abstract class NaturalNumberTest {
     // TODO - add test cases for four constructors, multiplyBy10, divideBy10, isZero
 
     /*
-     *
-     *
-     * these are all untested codes!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     *
-     *
-     *
-     *
-     *
-     * qq
-     */
-    /*
      * Test cases for the first empty constructor
      */
     @Test
-    public void testNoArgsConstructor() {
+    public void testNoArgsConstructor1() {
 
-        //  Set up variables and call method under test
-
+        //empty constructor
         NaturalNumber test = this.constructorTest();
         NaturalNumber expected = this.constructorRef();
+
+        //  Assert that values of variables match expectations
+
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testNoArgsConstructor2() {
+
+        //empty string
+
+        NaturalNumber test = this.constructorTest("");
+        NaturalNumber expected = this.constructorRef("");
+
+        //  Assert that values of variables match expectations
+
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testNoArgsConstructor3() {
+
+        //int zero
+
+        NaturalNumber test = this.constructorTest(0);
+        NaturalNumber expected = this.constructorRef(0);
 
         //  Assert that values of variables match expectations
 
@@ -139,7 +153,7 @@ public abstract class NaturalNumberTest {
 
         //  Set up variables and call method under test
 
-        NaturalNumber test = this.constructorTest(0);
+        NaturalNumber test = this.constructorTest();
         NaturalNumber expected = this.constructorRef();
 
         //  Assert that values of variables match expectations
@@ -147,16 +161,26 @@ public abstract class NaturalNumberTest {
         assertEquals(expected, test);
     }
 
-    /*
-     * Test cases for the 2nd constructor with int value
-     */
     @Test
     public void testIntConstructor2() {
 
         //  Set up variables and call method under test
 
-        NaturalNumber test = this.constructorTest(3);
-        NaturalNumber expected = this.constructorRef(3);
+        NaturalNumber test = this.constructorTest(0);
+        NaturalNumber expected = this.constructorRef(0);
+
+        //  Assert that values of variables match expectations
+
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testIntConstructor3() {
+
+        //  Set up variables and call method under test
+
+        NaturalNumber test = this.constructorTest("");
+        NaturalNumber expected = this.constructorRef("");
 
         //  Assert that values of variables match expectations
 
@@ -171,7 +195,7 @@ public abstract class NaturalNumberTest {
 
         //  Set up variables and call method under test
 
-        NaturalNumber test = this.constructorTest("0");
+        NaturalNumber test = this.constructorTest();
         NaturalNumber expected = this.constructorRef();
 
         //  Assert that values of variables match expectations
@@ -187,8 +211,8 @@ public abstract class NaturalNumberTest {
 
         //  Set up variables and call method under test
 
-        NaturalNumber test = this.constructorTest("9");
-        NaturalNumber expected = this.constructorRef("9");
+        NaturalNumber test = this.constructorTest("");
+        NaturalNumber expected = this.constructorRef("");
 
         //  Assert that values of variables match expectations
 
@@ -203,8 +227,8 @@ public abstract class NaturalNumberTest {
 
         //  Set up variables and call method under test
 
-        NaturalNumber test = this.constructorTest("");
-        NaturalNumber expected = this.constructorRef("");
+        NaturalNumber test = this.constructorTest(0);
+        NaturalNumber expected = this.constructorRef(0);
 
         //  Assert that values of variables match expectations
 
@@ -218,6 +242,19 @@ public abstract class NaturalNumberTest {
     public void testNNConstructor1() {
 
         //  Set up variables and call method under test
+        NaturalNumber x = new NaturalNumber1L();
+        NaturalNumber test = this.constructorTest(x);
+        NaturalNumber expected = this.constructorRef(x);
+
+        //  Assert that values of variables match expectations
+
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testNNConstructor2() {
+
+        //  Set up variables and call method under test
         NaturalNumber x = new NaturalNumber1L("0");
         NaturalNumber test = this.constructorTest(x);
         NaturalNumber expected = this.constructorRef(x);
@@ -227,14 +264,11 @@ public abstract class NaturalNumberTest {
         assertEquals(expected, test);
     }
 
-    /*
-     * Test cases for the 4th constructor with NaturalNumber value
-     */
     @Test
-    public void testNNConstructor2() {
+    public void testNNConstructor3() {
 
         //  Set up variables and call method under test
-        NaturalNumber x = new NaturalNumber1L("999999999999999999999");
+        NaturalNumber x = new NaturalNumber1L(0);
         NaturalNumber test = this.constructorTest(x);
         NaturalNumber expected = this.constructorRef(x);
 
@@ -244,14 +278,17 @@ public abstract class NaturalNumberTest {
     }
 
     /*
-     * Test cases for the multiplyBy10 method
+     * Test cases for the multiplyBy10 method. 1: testing with double digit int
+     * numbers. 2: testing with large digit int numbers 3: testing with int max
+     * value 4: testing with int zero 5: testing with string zero 6: testing
+     * with
      */
     @Test
     public void testMultiBy10_1() {
 
         //  Set up variables and call method under test
         NaturalNumber test = this.constructorTest(10);
-        NaturalNumber expected = this.constructorRef(100);
+        NaturalNumber expected = this.constructorRef(10);
 
         test.multiplyBy10(0);
         expected.multiplyBy10(0);
@@ -269,7 +306,7 @@ public abstract class NaturalNumberTest {
 
         //  Set up variables and call method under test
         NaturalNumber test = this.constructorTest(123456);
-        NaturalNumber expected = this.constructorRef(1234560);
+        NaturalNumber expected = this.constructorRef(123456);
 
         //  Assert that values of variables match expectations
 
@@ -288,7 +325,7 @@ public abstract class NaturalNumberTest {
         //  Set up variables and call method under test
         int maxVal = Integer.MAX_VALUE;
         NaturalNumber test = this.constructorTest(maxVal);
-        NaturalNumber expected = this.constructorRef(maxVal + "0");
+        NaturalNumber expected = this.constructorRef(maxVal);
 
         //  Assert that values of variables match expectations
 
