@@ -254,6 +254,7 @@ public abstract class NaturalNumberTest {
         NaturalNumber expected = this.constructorRef(100);
 
         test.multiplyBy10(0);
+        expected.multiplyBy10(0);
 
         //  Assert that values of variables match expectations
 
@@ -272,6 +273,9 @@ public abstract class NaturalNumberTest {
 
         //  Assert that values of variables match expectations
 
+        test.multiplyBy10(0);
+        expected.multiplyBy10(0);
+
         assertEquals(expected, test);
     }
 
@@ -288,6 +292,65 @@ public abstract class NaturalNumberTest {
 
         //  Assert that values of variables match expectations
 
+        test.multiplyBy10(0);
+        expected.multiplyBy10(0);
+
+        assertEquals(expected, test);
+    }
+
+    /*
+     * Test cases for the multiplyBy10 method
+     */
+    @Test
+    public void testMultiBy10_4() {
+
+        //  Set up variables and call method under test
+        NaturalNumber test = this.constructorTest(0);
+        NaturalNumber expected = this.constructorRef(0);
+
+        //  Assert that values of variables match expectations
+
+        test.multiplyBy10(0);
+        expected.multiplyBy10(0);
+        assertEquals(expected, test);
+    }
+
+    /*
+     * Test cases for the multiplyBy10 method
+     */
+    @Test
+    public void testMultiBy10_5() {
+
+        //  Set up variables and call method under test
+        NaturalNumber test = this.constructorTest("0");
+        NaturalNumber expected = this.constructorRef("0");
+
+        //  Assert that values of variables match expectations
+
+        test.multiplyBy10(0);
+        expected.multiplyBy10(0);
+
+        assertEquals(expected, test);
+    }
+
+    /*
+     * Test cases for the multiplyBy10 method
+     */
+    @Test
+    public void testMultiBy10_6() {
+
+        //  Set up variables and call method under test
+        NaturalNumber test = this.constructorTest("1");
+        NaturalNumber expected = this.constructorRef("1");
+
+        NaturalNumber test2 = this.constructorTest(test);
+        NaturalNumber expected2 = this.constructorTest(expected);
+
+        //  Assert that values of variables match expectations
+
+        test2.multiplyBy10(0);
+        expected2.multiplyBy10(0);
+
         assertEquals(expected, test);
     }
 
@@ -297,38 +360,89 @@ public abstract class NaturalNumberTest {
     @Test
     public void testDivBy10_1() {
 
-        //  Set up variables and call method under test
+        //Call divideBy10 method using max int value
         int maxVal = Integer.MAX_VALUE;
         NaturalNumber test = this.constructorTest(maxVal);
-        NaturalNumber expected = this.constructorRef(7);
+        NaturalNumber expected = this.constructorRef(maxVal);
 
         //  Assert that values of variables match expectations
 
+        int x = test.divideBy10();
+        int y = expected.divideBy10();
+
         assertEquals(expected, test);
+        assertEquals(y, x);
+
     }
 
     @Test
     public void testDivBy10_2() {
 
-        //  Set up variables and call method under test
+        //Call divideBy10 method using int zeros
         NaturalNumber test = this.constructorTest(0);
-        NaturalNumber expected = this.constructorRef();
+        NaturalNumber expected = this.constructorRef(0);
 
         //  Assert that values of variables match expectations
 
+        int x = test.divideBy10();
+        int y = expected.divideBy10();
+
         assertEquals(expected, test);
+        assertEquals(y, x);
     }
 
     @Test
     public void testDivBy10_3() {
 
-        //  Set up variables and call method under test
+        //Call divideBy10 method using large strings
         NaturalNumber test = this.constructorTest("98765432123456789");
-        NaturalNumber expected = this.constructorRef(9);
+        NaturalNumber expected = this.constructorRef("98765432123456789");
 
         //  Assert that values of variables match expectations
 
+        int x = test.divideBy10();
+        int y = expected.divideBy10();
+
         assertEquals(expected, test);
+        assertEquals(y, x);
+    }
+
+    @Test
+    public void testDivBy10_4() {
+
+        //  Set up variables and call method under test
+        NaturalNumber test = this.constructorTest(00);
+        NaturalNumber expected = this.constructorRef(00);
+
+        //  Assert that values of variables match expectations
+
+        int x = test.divideBy10();
+        int y = expected.divideBy10();
+
+        assertEquals(expected, test);
+        assertEquals(y, x);
+    }
+
+    /*
+     * Test cases for the divideBy10 method using NaturalNumber
+     */
+    @Test
+    public void testDivBy10_5() {
+
+        //Call divideBy10 method using NaturalNumber
+        NaturalNumber test = this.constructorTest(10);
+        NaturalNumber expected = this.constructorRef(10);
+
+        NaturalNumber test2 = this.constructorTest(test);
+        NaturalNumber expected2 = this.constructorRef(expected);
+
+        //  Assert that values of variables match expectations
+
+        int x = test2.divideBy10();
+        int y = expected2.divideBy10();
+
+        assertEquals(expected2, test2);
+        assertEquals(y, x);
     }
 
 }
