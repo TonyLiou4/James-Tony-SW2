@@ -2,6 +2,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import components.map.Map;
+import components.map.Map2;
 import components.map.MapSecondary;
 
 /**
@@ -34,7 +35,7 @@ import components.map.MapSecondary;
  *          (pf)
  * </pre>
  *
- * @author Put your name here
+ * @author Tony Liou and Sungwoon Park
  *
  */
 public class Map4<K, V> extends MapSecondary<K, V> {
@@ -74,11 +75,12 @@ public class Map4<K, V> extends MapSecondary<K, V> {
      */
     private static int mod(int a, int b) {
         assert b > 0 : "Violation of: b > 0";
+        int temp = a % b;
+        if (temp < 0) {
+            temp = temp + b;
+        }
 
-        // TODO - fill in body
-
-        // This line added just to make the component compilable.
-        return 0;
+        return temp;
     }
 
     /**
@@ -104,7 +106,10 @@ public class Map4<K, V> extends MapSecondary<K, V> {
          */
         this.hashTable = new Map[hashTableSize];
 
-        // TODO - fill in rest of body
+        for (int i = 0; i < this.hashTable.length; i++) {
+            //have to use map2 as suggested by instruction
+            this.hashTable[i] = new Map2<K, V>();
+        }
 
     }
 
@@ -116,8 +121,8 @@ public class Map4<K, V> extends MapSecondary<K, V> {
      * No-argument constructor.
      */
     public Map4() {
-
-        // TODO - fill in body
+        //what is the default size for hashTable
+        this.createNewRep(0);
 
     }
 
@@ -131,7 +136,7 @@ public class Map4<K, V> extends MapSecondary<K, V> {
      */
     public Map4(int hashTableSize) {
 
-        // TODO - fill in body
+        this.createNewRep(hashTableSize);
 
     }
 
@@ -182,8 +187,10 @@ public class Map4<K, V> extends MapSecondary<K, V> {
         assert value != null : "Violation of: value is not null";
         assert !this.hasKey(key) : "Violation of: key is not in DOMAIN(this)";
 
-        // TODO - fill in body
-
+        //WTF does this add method suppse to do?
+        int temp = 0;
+        //add some calculation
+        this.hashTable[temp].add(key, value);
     }
 
     @Override
@@ -191,19 +198,21 @@ public class Map4<K, V> extends MapSecondary<K, V> {
         assert key != null : "Violation of: key is not null";
         assert this.hasKey(key) : "Violation of: key is in DOMAIN(this)";
 
-        // TODO - fill in body
+        int temp = 0;
+        //some caluclation
+        Pair<K, V> x = this.hashTable[temp].remove(key);
 
         // This line added just to make the component compilable.
-        return null;
+        return x;
     }
 
     @Override
     public final Pair<K, V> removeAny() {
         assert this.size() > 0 : "Violation of: this /= empty_set";
 
-        // TODO - fill in body
-
-        // This line added just to make the component compilable.
+        int temp = 0;
+        //some caluclation
+        Pair<K, V> x = this.hashTable[temp].removeAny();
         return null;
     }
 
@@ -212,27 +221,29 @@ public class Map4<K, V> extends MapSecondary<K, V> {
         assert key != null : "Violation of: key is not null";
         assert this.hasKey(key) : "Violation of: key is in DOMAIN(this)";
 
-        // TODO - fill in body
+        int temp = 0;
+        //some caluclation
+        V x = this.hashTable[temp].value(key);// TODO - fill in body
 
         // This line added just to make the component compilable.
-        return null;
+        return x;
     }
 
     @Override
     public final boolean hasKey(K key) {
         assert key != null : "Violation of: key is not null";
 
-        // TODO - fill in body
+        int temp = 0;
+        //some caluclation
+        boolean x = this.hashTable[temp].hasKey(key);
 
         // This line added just to make the component compilable.
-        return false;
+        return x;
     }
 
     @Override
     public final int size() {
-
-        // TODO - fill in body
-
+        int temp = this.hashTable.size();
         // This line added just to make the component compilable.
         return 0;
     }
