@@ -81,34 +81,32 @@ public abstract class MapTest {
         return map;
     }
 
-    // TODO - add test cases for constructor, add, remove, removeAny, value,
-    // hasKey, and size
-
     /*
      * Test case for the constructor
      */
     @Test
     public void testNoArgsConstructor_Empty() {
-
-        //  Set up variables and call method under test
-
         Map<String, String> test = this.constructorTest();
         Map<String, String> expected = this.constructorRef();
-
-        //  Assert that values of variables match expectations
 
         assertEquals(expected, test);
     }
 
     @Test
-    public void testConstructor() {
+    public void testConstructor_onePair() {
+        Map<String, String> test = this.createFromArgsTest("zero", "0");
+        Map<String, String> expected = this.createFromArgsRef("zero", "0");
 
-        //  Set up variables and call method under test
+        assertEquals(expected, test);
+    }
 
-        Map<String, String> test = this.createFromArgsTest("0", "0");
-        Map<String, String> expected = this.createFromArgsRef("0", "0");
+    @Test
+    public void testConstructor_multiplePairs() {
+        Map<String, String> test = this.createFromArgsTest("zero", "0", "one",
+                "1", "two", "2");
+        Map<String, String> expected = this.createFromArgsRef("zero", "0",
+                "one", "1", "two", "2");
 
-        //  Assert that values of variables match expectations
         assertEquals(expected, test);
     }
 
@@ -238,10 +236,12 @@ public abstract class MapTest {
     }
 
     @Test
-    public void testValue() {
+    public void testValue_normalCase() {
         Map<String, String> map = this.createFromArgsTest("James", "1", "Tony",
                 "2", "John", "10000000000000000000");
+
         String test = map.value("John");
+
         String expected = "10000000000000000000";
 
         assertEquals(expected, test);
