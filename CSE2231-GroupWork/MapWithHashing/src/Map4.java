@@ -22,7 +22,7 @@ import components.map.MapSecondary;
  *   ([computed result of x.hashCode()] mod |$this.hashTable| = i))  and
  * for all i: integer
  *     where (0 <= i  and  i < |$this.hashTable|)
- *   ([entry at position i in $this.hashTable is not null])  and
+ *   ([entry at position i in $this.hashTable is not null])  and ***************************************************
  * $this.size = sum i: integer, pf: PARTIAL_FUNCTION
  *     where (0 <= i  and  i < |$this.hashTable|  and
  *            <pf> = $this.hashTable[i, i+1))
@@ -202,20 +202,10 @@ public class Map4<K, V> extends MapSecondary<K, V> {
         assert key != null : "Violation of: key is not null";
         assert this.hasKey(key) : "Violation of: key is in DOMAIN(this)";
 
-        int length = this.hashTable.length;
-
+        //*************we can ssume every bucket is not null************
         int numBucket = mod(key.hashCode(), this.hashTable.length);
         this.size--;
-        Pair<K, V> pair = this.hashTable[numBucket].remove(key);
-        // iterate through every Map in the array
-
-        //      for (int i = 0; i < length; i++) {
-        // if the Map contains the key then remove that pair and return it
-        //          if (this.hashTable[i].hasKey(key)) {
-        //              pair = this.hashTable[1].remove(key);
-        //          }
-        //      }
-        return pair;
+        return this.hashTable[numBucket].remove(key);
     }
 
     @Override
@@ -223,15 +213,12 @@ public class Map4<K, V> extends MapSecondary<K, V> {
         assert this.size() > 0 : "Violation of: this /= empty_set";
 
         int temp = 0;
-        int length = this.hashTable.length;
-        for (int i = 0; i < length; i++) {
-            if (this.hashTable[i].size() == 0) {
-                temp++;
-            }
+        if (this.hashTable[temp].size() == 0) {
+            temp++;
         }
-        Pair<K, V> x = this.hashTable[temp].removeAny();
+
         this.size--;
-        return x;
+        return this.hashTable[temp].removeAny();
     }
 
     @Override
@@ -255,11 +242,10 @@ public class Map4<K, V> extends MapSecondary<K, V> {
         assert key != null : "Violation of: key is not null";
 
         boolean x = false;
-        for (int i = 0; i < (this.hashTable.length); i++) {
-            //if (this.hashTable[].hasKey(key)) {
+        int length = this.hashTable.length;
+        for (int i = 0; i < length; i++) {
             x = this.hashTable[mod(key.hashCode(), this.hashTable.length)]
                     .hasKey(key);
-            // }
         }
         //could use a while loop for performance reasons
         return x;
@@ -267,12 +253,6 @@ public class Map4<K, V> extends MapSecondary<K, V> {
 
     @Override
     public final int size() {
-        //   int temp = 0;
-        //   int length = this.hashTable.length;
-        //   for (int i = 0; i < length; i++) {
-        //       temp += this.hashTable[i].size();
-        //   }
-        //size varable is wriiting in contract above
         return this.size;
     }
 
