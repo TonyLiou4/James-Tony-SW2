@@ -105,8 +105,8 @@ public class Map4<K, V> extends MapSecondary<K, V> {
          * conversion, though it cannot fail.
          */
         this.hashTable = new Map[hashTableSize];
-
-        for (int i = 0; i < this.hashTable.length; i++) {
+        int length = this.hashTable.length;
+        for (int i = 0; i < length; i++) {
             //have to use map2 as suggested by instruction
             this.hashTable[i] = new Map2<K, V>();
         }
@@ -122,7 +122,7 @@ public class Map4<K, V> extends MapSecondary<K, V> {
      */
     public Map4() {
         //what is the default size for hashTable
-        this.createNewRep(0);
+        this.createNewRep(DEFAULT_HASH_TABLE_SIZE);
 
     }
 
@@ -132,7 +132,7 @@ public class Map4<K, V> extends MapSecondary<K, V> {
      * @param hashTableSize
      *            size of hash table
      * @requires hashTableSize > 0
-     * @ensures this = {}
+     * @ensures this = {}6
      */
     public Map4(int hashTableSize) {
 
@@ -187,23 +187,35 @@ public class Map4<K, V> extends MapSecondary<K, V> {
         assert value != null : "Violation of: value is not null";
         assert !this.hasKey(key) : "Violation of: key is not in DOMAIN(this)";
 
-        //WTF does this add method suppse to do?
-        int temp = 0;
-        //add some calculation
-        this.hashTable[temp].add(key, value);
+        //what does the hashCode method do????
+        this.hashTable[mod(key.hashCode(), this.hashTable.length)].add(key,
+                value);
+
+        //why TF do we need this size method?
+        //what excatly does it do?
+        this.size++;
     }
 
     @Override
+
     public final Pair<K, V> remove(K key) {
         assert key != null : "Violation of: key is not null";
         assert this.hasKey(key) : "Violation of: key is in DOMAIN(this)";
 
-        int temp = 0;
-        //some caluclation
-        Pair<K, V> x = this.hashTable[temp].remove(key);
+        int length = this.hashTable.length;
 
-        // This line added just to make the component compilable.
-        return x;
+        int numBucket = mod(key.hashCode(), this.hashTable.length);
+        this.size--;
+        Pair<K, V> pair = this.hashTable[numBucket].remove(key);
+        // iterate through every Map in the array
+
+        //      for (int i = 0; i < length; i++) {
+        // if the Map contains the key then remove that pair and return it
+        //          if (this.hashTable[i].hasKey(key)) {
+        //              pair = this.hashTable[1].remove(key);
+        //          }
+        //      }
+        return pair;
     }
 
     @Override
@@ -211,9 +223,15 @@ public class Map4<K, V> extends MapSecondary<K, V> {
         assert this.size() > 0 : "Violation of: this /= empty_set";
 
         int temp = 0;
-        //some caluclation
+        int length = this.hashTable.length;
+        for (int i = 0; i < length; i++) {
+            if (this.hashTable[i].size() == 0) {
+                temp++;
+            }
+        }
         Pair<K, V> x = this.hashTable[temp].removeAny();
-        return null;
+        this.size--;
+        return x;
     }
 
     @Override
@@ -221,11 +239,14 @@ public class Map4<K, V> extends MapSecondary<K, V> {
         assert key != null : "Violation of: key is not null";
         assert this.hasKey(key) : "Violation of: key is in DOMAIN(this)";
 
-        int temp = 0;
-        //some caluclation
-        V x = this.hashTable[temp].value(key);// TODO - fill in body
+        V x = null;
+        for (int i = 0; i < (this.hashTable.length); i++) {
+            if (this.hashTable[i].hasKey(key)) {
+                x = this.hashTable[mod(key.hashCode(), this.hashTable.length)]
+                        .value(key);
+            }
+        }
 
-        // This line added just to make the component compilable.
         return x;
     }
 
@@ -233,19 +254,26 @@ public class Map4<K, V> extends MapSecondary<K, V> {
     public final boolean hasKey(K key) {
         assert key != null : "Violation of: key is not null";
 
-        int temp = 0;
-        //some caluclation
-        boolean x = this.hashTable[temp].hasKey(key);
-
-        // This line added just to make the component compilable.
+        boolean x = false;
+        for (int i = 0; i < (this.hashTable.length); i++) {
+            //if (this.hashTable[].hasKey(key)) {
+            x = this.hashTable[mod(key.hashCode(), this.hashTable.length)]
+                    .hasKey(key);
+            // }
+        }
+        //could use a while loop for performance reasons
         return x;
     }
 
     @Override
     public final int size() {
-        int temp = this.hashTable.size();
-        // This line added just to make the component compilable.
-        return 0;
+        //   int temp = 0;
+        //   int length = this.hashTable.length;
+        //   for (int i = 0; i < length; i++) {
+        //       temp += this.hashTable[i].size();
+        //   }
+        //size varable is wriiting in contract above
+        return this.size;
     }
 
     @Override
