@@ -22,7 +22,7 @@ import components.map.MapSecondary;
  *   ([computed result of x.hashCode()] mod |$this.hashTable| = i))  and
  * for all i: integer
  *     where (0 <= i  and  i < |$this.hashTable|)
- *   ([entry at position i in $this.hashTable is not null])  and ***************************************************
+ *   ([entry at position i in $this.hashTable is not null])  and
  * $this.size = sum i: integer, pf: PARTIAL_FUNCTION
  *     where (0 <= i  and  i < |$this.hashTable|  and
  *            <pf> = $this.hashTable[i, i+1))
@@ -35,7 +35,7 @@ import components.map.MapSecondary;
  *          (pf)
  * </pre>
  *
- * @author Tony Liou and Sungwoon Park
+ * @author Sungwoon Park and Tony Liou
  *
  */
 public class Map4<K, V> extends MapSecondary<K, V> {
@@ -75,12 +75,13 @@ public class Map4<K, V> extends MapSecondary<K, V> {
      */
     private static int mod(int a, int b) {
         assert b > 0 : "Violation of: b > 0";
-        int temp = a % b;
-        if (temp < 0) {
-            temp = temp + b;
-        }
 
-        return temp;
+        Integer returnVal = a % b;
+
+        if (a < 0) {
+            returnVal += b;
+        }
+        return returnVal;
     }
 
     /**
@@ -105,12 +106,10 @@ public class Map4<K, V> extends MapSecondary<K, V> {
          * conversion, though it cannot fail.
          */
         this.hashTable = new Map[hashTableSize];
-        int length = this.hashTable.length;
-        for (int i = 0; i < length; i++) {
-            //have to use map2 as suggested by instruction
+
+        for (int i = 0; i < this.hashTable.length; i++) {
             this.hashTable[i] = new Map2<K, V>();
         }
-
     }
 
     /*
@@ -121,9 +120,7 @@ public class Map4<K, V> extends MapSecondary<K, V> {
      * No-argument constructor.
      */
     public Map4() {
-        //what is the default size for hashTable
         this.createNewRep(DEFAULT_HASH_TABLE_SIZE);
-
     }
 
     /**
@@ -132,12 +129,10 @@ public class Map4<K, V> extends MapSecondary<K, V> {
      * @param hashTableSize
      *            size of hash table
      * @requires hashTableSize > 0
-     * @ensures this = {}6
+     * @ensures this = {}
      */
     public Map4(int hashTableSize) {
-
         this.createNewRep(hashTableSize);
-
     }
 
     /*
@@ -187,25 +182,19 @@ public class Map4<K, V> extends MapSecondary<K, V> {
         assert value != null : "Violation of: value is not null";
         assert !this.hasKey(key) : "Violation of: key is not in DOMAIN(this)";
 
-        //what does the hashCode method do????
-        this.hashTable[mod(key.hashCode(), this.hashTable.length)].add(key,
-                value);
-
-        //why TF do we need this size method?
-        //what excatly does it do?
+        int bucket = mod(key.hashCode(), this.hashTable.length);
         this.size++;
+        this.hashTable[bucket].add(key, value);
     }
 
     @Override
-
     public final Pair<K, V> remove(K key) {
         assert key != null : "Violation of: key is not null";
         assert this.hasKey(key) : "Violation of: key is in DOMAIN(this)";
 
-        //*************we can ssume every bucket is not null************
-        int numBucket = mod(key.hashCode(), this.hashTable.length);
+        int bucket = mod(key.hashCode(), this.hashTable.length);
         this.size--;
-        return this.hashTable[numBucket].remove(key);
+        return this.hashTable[bucket].remove(key);
     }
 
     @Override
@@ -213,10 +202,9 @@ public class Map4<K, V> extends MapSecondary<K, V> {
         assert this.size() > 0 : "Violation of: this /= empty_set";
 
         int temp = 0;
-        if (this.hashTable[temp].size() == 0) {
+        while (this.hashTable[temp].size() == 0) {
             temp++;
         }
-
         this.size--;
         return this.hashTable[temp].removeAny();
     }
@@ -226,33 +214,40 @@ public class Map4<K, V> extends MapSecondary<K, V> {
         assert key != null : "Violation of: key is not null";
         assert this.hasKey(key) : "Violation of: key is in DOMAIN(this)";
 
-        V x = null;
-        for (int i = 0; i < (this.hashTable.length); i++) {
+        int length = this.hashTable.length;
+        V value = null;
+
+        // iterate through every Map in the array
+        for (int i = 0; i < length; i++) {
+            // if the Map contains the key then remove its value and return it
             if (this.hashTable[i].hasKey(key)) {
-                x = this.hashTable[mod(key.hashCode(), this.hashTable.length)]
-                        .value(key);
+                int bucket = mod(key.hashCode(), this.hashTable.length);
+                value = this.hashTable[bucket].value(key);
             }
         }
 
-        return x;
+        return value;
     }
 
     @Override
     public final boolean hasKey(K key) {
         assert key != null : "Violation of: key is not null";
 
-        boolean x = false;
+        boolean hasKey = false;
         int length = this.hashTable.length;
+
+        // iterate through every Map in the array
         for (int i = 0; i < length; i++) {
-            x = this.hashTable[mod(key.hashCode(), this.hashTable.length)]
-                    .hasKey(key);
+            // if the Map contains the key then return true
+            int bucket = mod(key.hashCode(), this.hashTable.length);
+            hasKey = this.hashTable[bucket].hasKey(key);
         }
-        //could use a while loop for performance reasons
-        return x;
+        return hasKey;
     }
 
     @Override
     public final int size() {
+        // returns the length of the array hasTable
         return this.size;
     }
 

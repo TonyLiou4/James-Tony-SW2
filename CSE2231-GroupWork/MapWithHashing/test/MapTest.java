@@ -8,7 +8,7 @@ import components.map.Map;
  * JUnit test fixture for {@code Map<String, String>}'s constructor and kernel
  * methods.
  *
- * @author Put your name here
+ * @author Sungwoon Park and Tony Liou
  *
  */
 public abstract class MapTest {
@@ -81,7 +81,7 @@ public abstract class MapTest {
         return map;
     }
 
-    /*
+    /**
      * Test case for the constructor
      */
     @Test
@@ -93,15 +93,15 @@ public abstract class MapTest {
     }
 
     @Test
-    public void testConstructor_onePair() {
-        Map<String, String> test = this.createFromArgsTest("zero", "0");
-        Map<String, String> expected = this.createFromArgsRef("zero", "0");
+    public void testConstructor_OnePair() {
+        Map<String, String> test = this.createFromArgsTest("Zero", "0");
+        Map<String, String> expected = this.createFromArgsRef("Zero", "0");
 
         assertEquals(expected, test);
     }
 
     @Test
-    public void testConstructor_multiplePairs() {
+    public void testConstructor_MultiplePair() {
         Map<String, String> test = this.createFromArgsTest("zero", "0", "one",
                 "1", "two", "2");
         Map<String, String> expected = this.createFromArgsRef("zero", "0",
@@ -113,24 +113,23 @@ public abstract class MapTest {
     /**
      * Test add method
      */
-
     @Test
-    public void testAdd_ZeroSize() {
+    public void testAdd_Empty() {
 
         Map<String, String> test = this.createFromArgsTest();
-        Map<String, String> expected = this.createFromArgsRef("James", "1");
+        Map<String, String> expected = this.createFromArgsRef();
         test.add("James", "1");
+        expected.add("James", "1");
 
         assertEquals(expected, test);
     }
 
     @Test
-    public void testAdd_Normal() {
-
+    public void testAdd_OnePair() {
         Map<String, String> test = this.createFromArgsTest("James", "1");
-        Map<String, String> expected = this.createFromArgsRef("James", "1",
-                "Tony", "2");
+        Map<String, String> expected = this.createFromArgsRef("James", "1");
         test.add("Tony", "2");
+        expected.add("Tony", "2");
 
         assertEquals(expected, test);
     }
@@ -138,10 +137,8 @@ public abstract class MapTest {
     /**
      * Test remove method
      */
-
     @Test
-    public void testRemove1() {
-
+    public void testRemove_OnePair() {
         Map<String, String> test = this.createFromArgsTest("James", "1");
         Map<String, String> expected = this.createFromArgsRef("James", "1");
         Map.Pair<String, String> pair = test.remove("James");
@@ -152,59 +149,60 @@ public abstract class MapTest {
     }
 
     @Test
-    public void testRemove2() {
+    public void testRemove_MultiplePair() {
 
         Map<String, String> test = this.createFromArgsTest("James", "1", "Tony",
                 "2");
-        Map<String, String> expected = this.createFromArgsRef("Tony", "2");
-        test.remove("James");
+        Map<String, String> expected = this.createFromArgsRef("James", "1",
+                "Tony", "2");
+        Map.Pair<String, String> pair = test.remove("Tony");
+        Map.Pair<String, String> pairExpected = expected.remove("Tony");
 
+        assertEquals(pairExpected, pair);
         assertEquals(expected, test);
     }
 
     /**
      * Test removeAny method
      */
-
     @Test
-    public void testRemoveAny_OneElement() {
-
+    public void testRemoveAny_OnePair() {
         Map<String, String> test = this.createFromArgsTest("James", "1");
-        Map<String, String> expected = this.createFromArgsTest("James", "1");
+        Map<String, String> expected = this.createFromArgsRef("James", "1");
         Map.Pair<String, String> pair = test.removeAny();
+        Map.Pair<String, String> pairExpected = expected.remove(pair.key());
 
         assertEquals(true, expected.hasKey(pair.key()));
-        Map.Pair<String, String> pairExpected = expected.remove(pair.key());
         assertEquals(pairExpected, pair);
         assertEquals(expected, test);
     }
 
     @Test
-    public void testRemoveAny_TwoElement() {
+    public void testRemoveAny_TwoPair() {
 
         Map<String, String> test = this.createFromArgsTest("James", "1", "Tony",
                 "2");
-        Map<String, String> expected = this.createFromArgsTest("James", "1",
+        Map<String, String> expected = this.createFromArgsRef("James", "1",
                 "Tony", "2");
         Map.Pair<String, String> pair = test.removeAny();
+        Map.Pair<String, String> pairExpected = expected.remove(pair.key());
 
         assertEquals(true, expected.hasKey(pair.key()));
-        Map.Pair<String, String> pairExpected = expected.remove(pair.key());
         assertEquals(pairExpected, pair);
         assertEquals(expected, test);
     }
 
     @Test
-    public void testRemoveAny_TElement() {
+    public void testRemoveAny_ThreePair() {
 
         Map<String, String> test = this.createFromArgsTest("James", "1", "Tony",
                 "2", "Bob", "3");
-        Map<String, String> expected = this.createFromArgsTest("James", "1",
+        Map<String, String> expected = this.createFromArgsRef("James", "1",
                 "Tony", "2", "Bob", "3");
         Map.Pair<String, String> pair = test.removeAny();
+        Map.Pair<String, String> pairExpected = expected.remove(pair.key());
 
         assertEquals(true, expected.hasKey(pair.key()));
-        Map.Pair<String, String> pairExpected = expected.remove(pair.key());
         assertEquals(pairExpected, pair);
         assertEquals(expected, test);
     }
@@ -212,47 +210,36 @@ public abstract class MapTest {
     /**
      * Test value method
      */
-
     @Test
-    public void testValue1() {
+    public void testValue_onePair() {
+        Map<String, String> test = this.createFromArgsTest("James", "1");
+        Map<String, String> expected = this.createFromArgsRef("James", "1");
+        String value = test.value("James");
+        String valueExpected = test.value("James");
 
-        Map<String, String> map = this.createFromArgsTest("James", "1", "Tony",
-                "2");
-        String test = map.value("Tony");
-        String expected = "2";
-
+        assertEquals(valueExpected, value);
         assertEquals(expected, test);
     }
 
     @Test
-    public void testValue2() {
-
-        Map<String, String> map = this.createFromArgsTest("James", "1", "Tony",
+    public void testValue_twoPair() {
+        Map<String, String> test = this.createFromArgsTest("James", "1", "Tony",
                 "2");
-        String test = map.value("James");
-        String expected = "1";
+        Map<String, String> expected = this.createFromArgsRef("James", "1",
+                "Tony", "2");
+        String value = test.value("Tony");
+        String valueExpected = test.value("Tony");
 
-        assertEquals(expected, test);
-    }
-
-    @Test
-    public void testValue_normalCase() {
-        Map<String, String> map = this.createFromArgsTest("James", "1", "Tony",
-                "2", "John", "10000000000000000000");
-
-        String test = map.value("John");
-
-        String expected = "10000000000000000000";
-
+        assertEquals(valueExpected, value);
         assertEquals(expected, test);
     }
 
     /**
      * Test hasKey method
      */
-
     @Test
-    public void testHasKey_isInKey() {
+    public void testHasKey_IsInKey() {
+
         Map<String, String> test = this.createFromArgsTest("James", "1", "Tony",
                 "2", "Bob", "3");
         Map<String, String> expected = this.createFromArgsTest("James", "1",
@@ -265,13 +252,14 @@ public abstract class MapTest {
     }
 
     @Test
-    public void testHasKey_notInKey() {
+    public void testHasKey_NotInKey() {
+
         Map<String, String> test = this.createFromArgsTest("James", "1", "Tony",
                 "2", "Bob", "3");
         Map<String, String> expected = this.createFromArgsTest("James", "1",
                 "Tony", "2", "Bob", "3");
-        boolean testBoo = test.hasKey("BooB");
-        boolean expectedBoo = expected.hasKey("BooB");
+        boolean testBoo = test.hasKey("Kelvin");
+        boolean expectedBoo = expected.hasKey("Kelvin");
 
         assertEquals(expectedBoo, testBoo);
         assertEquals(expected, test);
@@ -281,33 +269,38 @@ public abstract class MapTest {
      * Test size method
      */
     @Test
-    public void testIsSize1() {
+    public void testIsSize_Empty() {
 
-        Map<String, String> map = this.createFromArgsTest();
-        int test = map.size();
-        int expected = 0;
+        Map<String, String> test = this.createFromArgsTest();
+        Map<String, String> expected = this.createFromArgsRef();
+        int size = test.size();
+        int expectedSize = expected.size();
 
+        assertEquals(expectedSize, size);
         assertEquals(expected, test);
     }
 
     @Test
-    public void testIsSize2() {
+    public void testIsSize_OnePair() {
+        Map<String, String> test = this.createFromArgsTest("James", "1");
+        Map<String, String> expected = this.createFromArgsRef("James", "1");
+        int size = test.size();
+        int expectedSize = expected.size();
 
-        Map<String, String> map = this.createFromArgsTest("0", "0");
-        int test = map.size();
-        int expected = 1;
-
+        assertEquals(expectedSize, size);
         assertEquals(expected, test);
     }
 
     @Test
-    public void testIsSize3() {
+    public void testIsSize_TwoPair() {
+        Map<String, String> test = this.createFromArgsTest("James", "1", "Tony",
+                "2");
+        Map<String, String> expected = this.createFromArgsRef("James", "1",
+                "Tony", "2");
+        int size = test.size();
+        int expectedSize = expected.size();
 
-        Map<String, String> map = this.createFromArgsTest("0", "0", "1", "1",
-                "2", "2", "3", "3", "4", "4");
-        int test = map.size();
-        int expected = 5;
-
+        assertEquals(expectedSize, size);
         assertEquals(expected, test);
     }
 }
