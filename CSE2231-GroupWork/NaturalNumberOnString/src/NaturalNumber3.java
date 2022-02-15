@@ -1,6 +1,6 @@
 import components.naturalnumber.NaturalNumber;
 import components.naturalnumber.NaturalNumberSecondary;
-
+//random line of comment
 /**
  * his.rep = BigInteger.valueOf(0); {@code NaturalNumber} represented as a
  * {@code String} with implementations of primary methods.
