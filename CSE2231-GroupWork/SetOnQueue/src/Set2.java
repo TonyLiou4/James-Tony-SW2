@@ -4,8 +4,6 @@ import components.queue.Queue;
 import components.queue.Queue1L;
 import components.set.Set;
 import components.set.SetSecondary;
-import components.simplewriter.SimpleWriter;
-import components.simplewriter.SimpleWriter1L;
 
 /**
  * {@code Set} represented as a {@code Queue} of elements with implementations
@@ -46,35 +44,26 @@ public class Set2<T> extends SetSecondary<T> {
      */
     private static <T> void moveToFront(Queue<T> q, T x) {
         assert q != null : "Violation of: q is not null";
+//        Queue<T> q2 = q.newInstance();
+//        Queue<T> q3 = q.newInstance();
+//        q3.transferFrom(q);
+//
+//        while (q3.length() != 0) {
+//            T z = q3.dequeue();
+//            if (z.equals(x)) {
+//                q.enqueue(z);
+//            } else {
+//                q2.enqueue(z);
+//            }
+//        }
+//        q.append(q2);
 
-        T temp;
-        Queue temp2 = q.newInstance();
-
-        for (int i = 0; i < q.length(); i++) {
-            temp = q.dequeue();
-            if (temp.equals(x)) {
-                temp2.enqueue(temp);
-            } else {
-                q.enqueue(temp);
-            }
-
+        int i = 0;
+        while (!q.front().equals(x) && i < q.length()) {
+            q.enqueue(q.dequeue());
+            i++;
         }
-        q.append(temp2);
-        q.flip();
 
-    }
-
-    public static void main(String[] args) {
-        SimpleWriter out = new SimpleWriter1L();
-        out.println("Hello World!");
-        Queue<String> testing = new Queue1L<>();
-        testing.enqueue("one");
-        testing.enqueue("two");
-        testing.enqueue("three");
-        out.println(testing);
-        moveToFront(testing, "two");
-        out.println(testing);
-        out.close();
     }
 
     /**
@@ -141,7 +130,6 @@ public class Set2<T> extends SetSecondary<T> {
         assert !this.contains(x) : "Violation of: x is not in this";
 
         this.elements.enqueue(x);
-
     }
 
     @Override
@@ -150,37 +138,33 @@ public class Set2<T> extends SetSecondary<T> {
         assert this.contains(x) : "Violation of: x is in this";
 
         moveToFront(this.elements, x);
-        T f = this.elements.dequeue();
-        return f;
+        return this.elements.dequeue();
     }
 
     @Override
     public final T removeAny() {
         assert this.size() > 0 : "Violation of: |this| > 0";
 
-        // TODO - fill in body
-
-        // This line added just to make the component compilable.
-        return null;
+        return this.elements.dequeue();
     }
 
     @Override
     public final boolean contains(T x) {
         assert x != null : "Violation of: x is not null";
 
-        // TODO - fill in body
+        boolean itContains = false;
 
-        // This line added just to make the component compilable.
-        return false;
+        if (this.elements.length() > 0) {
+            moveToFront(this.elements, x);
+            itContains = this.elements.front().equals(x);
+        }
+
+        return itContains;
     }
 
     @Override
     public final int size() {
-
-        // TODO - fill in body
-
-        // This line added just to make the component compilable.
-        return 0;
+        return this.elements.length();
     }
 
     @Override

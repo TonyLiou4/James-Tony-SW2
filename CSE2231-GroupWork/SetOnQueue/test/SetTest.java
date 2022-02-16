@@ -1,5 +1,7 @@
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Test;
+
 import components.set.Set;
 
 /**
@@ -66,60 +68,322 @@ public abstract class SetTest {
         return set;
     }
 
-    // TODO - add test cases for constructor, add, remove, removeAny, contains, and size
+    /*
+     * Test cases for constructors
+     */
 
-    // test Contructor
-    public final void testContrutor() {
-        Set<T> test = this.constructorTest();
-        Set<T> ref = this.constructorRef();
-
-        assertEquals(ref, test);
+    @Test
+    public final void testNoArgumentConstructor() {
+        /*
+         * Set up variables and call method under test
+         */
+        Set<String> s = this.constructorTest();
+        Set<String> sExpected = this.constructorRef();
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
     }
 
-    // add method
-    public final void testAdd() {
-        Set<Integer> test = this.createFromArgsTest(1, 2);
-        Set<Integer> expect = this.createFromArgsRef(3, 1, 2);
+    /*
+     * Test cases for kernel methods
+     */
 
-        test.add(3);
-        assertEqiuals(expected, test);
+    @Test
+    public final void testAddEmpty() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest();
+        Set<String> sExpected = this.createFromArgsRef("red");
+        /*
+         * Call method under test
+         */
+        s.add("red");
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
     }
 
-    // remove method
-    public final void testRemove() {
-        Set<Integer> test = this.createFromArgsTest(1, 2);
-        Set<Integer> expect = this.createFromArgsRef(2);
-        test.remove(1);
-
-        assertEquals(expect, test);
+    @Test
+    public final void testAddNonEmptyOne() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("red");
+        Set<String> sExpected = this.createFromArgsRef("red", "blue");
+        /*
+         * Call method under test
+         */
+        s.add("blue");
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
     }
 
-    // removeAny method
-    public final void testRemoveAny() {
-        Set<Integer> test = this.createFromArgsTest(1, 2);
-        Set<Integer> expect = this.createFromArgsRef(2);
-        Set<Integer> expect2 = this.createFromArgsRef(1);
-
-        test.removeAny();
-        assertEquals(expect || expect2, test);
+    @Test
+    public final void testAddNonEmptyMoreThanOne() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("red", "blue", "green");
+        Set<String> sExpected = this.createFromArgsRef("red", "blue", "green",
+                "yellow");
+        /*
+         * Call method under test
+         */
+        s.add("yellow");
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
     }
 
-    // contains method
-
-    public final void testContains() {
-        Set<Integer> test = this.createFromArgsTest(1, 2);
-        Set<Integer> expect = this.createFromArgsRef(2);
-
-        test.contains(2);
-        assertEquals(expect, test);
+    @Test
+    public final void testRemoveLeavingEmpty() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("red");
+        Set<String> sExpected = this.createFromArgsRef();
+        /*
+         * Call method under test
+         */
+        String x = s.remove("red");
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals("red", x);
     }
 
-    // size method
-    public final void testSize() {
-        Set<Integer> test = this.createFromArgsTest(1, 2);
-        Set<Integer> expect = this.createFromArgsRef(2);
-
-        test.size();
-        assertEquals(test, expect);
+    @Test
+    public final void testRemoveLeavingNonEmptyOne() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("red", "blue");
+        Set<String> sExpected = this.createFromArgsRef("blue");
+        /*
+         * Call method under test
+         */
+        String x = s.remove("red");
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals("red", x);
     }
+
+    @Test
+    public final void testRemoveLeavingNonEmptyMoreThanOne() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("red", "green", "blue");
+        Set<String> sExpected = this.createFromArgsRef("green", "blue");
+        /*
+         * Call method under test
+         */
+        String x = s.remove("red");
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals("red", x);
+    }
+
+    @Test
+    public final void testRemoveAnyLeavingEmpty() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("red");
+        Set<String> sExpected = this.createFromArgsRef();
+        String xExpected = "red";
+        /*
+         * Call method under test
+         */
+        String x = s.removeAny();
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals(xExpected, x);
+    }
+
+    @Test
+    public final void testRemoveAnyLeavingNonEmptyOne() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("red", "blue");
+        Set<String> sExpected = this.createFromArgsRef("red", "blue");
+        String x = "";
+        String xExpected = x;
+        /*
+         * Call method under test
+         */
+        x = s.removeAny();
+        xExpected = sExpected.remove(x);
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals(xExpected, x);
+    }
+
+    @Test
+    public final void testRemoveAnyLeavingNonEmptyMoreThanOne() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("red", "green", "blue");
+        Set<String> sExpected = this.createFromArgsRef("red", "green", "blue");
+        String x = "";
+        String xExpected = x;
+        /*
+         * Call method under test
+         */
+        x = s.removeAny();
+        xExpected = sExpected.remove(x);
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals(xExpected, x);
+    }
+
+    @Test
+    public final void testContainsEmpty() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest();
+        Set<String> sExpected = this.createFromArgsRef();
+        /*
+         * Call method under test
+         */
+        boolean x = s.contains("red");
+        boolean xExpected = sExpected.contains("red");
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals(xExpected, x);
+    }
+
+    @Test
+    public final void testContainsNonEmpty() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("green");
+        Set<String> sExpected = this.createFromArgsRef("green");
+        /*
+         * Call method under test
+         */
+        boolean x = s.contains("green");
+        boolean xExpected = sExpected.contains("green");
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals(xExpected, x);
+    }
+
+    @Test
+    public final void testContainsNonEmptyTrue() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("red", "green", "blue");
+        Set<String> sExpected = this.createFromArgsRef("red", "green", "blue");
+        /*
+         * Call method under test
+         */
+        Boolean x = s.contains("blue");
+        Boolean xExpected = sExpected.contains("blue");
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals(xExpected, x);
+    }
+
+    @Test
+    public final void testContainsNonEmptyFalse() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("red", "green", "blue");
+        Set<String> sExpected = this.createFromArgsRef("red", "green", "blue");
+        /*
+         * Call method under test
+         */
+        Boolean x = s.contains("black");
+        Boolean xExpected = sExpected.contains("purple");
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals(xExpected, x);
+    }
+
+    @Test
+    public final void testSizeEmpty() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest();
+        Set<String> sExpected = this.createFromArgsRef();
+        /*
+         * Call method under test
+         */
+        int i = s.size();
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals(0, i);
+    }
+
+    @Test
+    public final void testSizeNonEmptyOne() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("red");
+        Set<String> sExpected = this.createFromArgsRef("red");
+        /*
+         * Call method under test
+         */
+        int i = s.size();
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals(1, i);
+    }
+
+    @Test
+    public final void testSizeNonEmptyMoreThanOne() {
+        /*
+         * Set up variables
+         */
+        Set<String> s = this.createFromArgsTest("red", "green", "blue");
+        Set<String> sExpected = this.createFromArgsRef("red", "green", "blue");
+        /*
+         * Call method under test
+         */
+        int i = s.size();
+        /*
+         * Assert that values of variables match expectations
+         */
+        assertEquals(sExpected, s);
+        assertEquals(3, i);
+    }
+
 }
