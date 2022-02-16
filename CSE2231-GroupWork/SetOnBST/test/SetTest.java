@@ -1,3 +1,7 @@
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
 import components.set.Set;
 
 /**
@@ -67,5 +71,88 @@ public abstract class SetTest {
     }
 
     // TODO - add test cases for constructor, add, remove, removeAny, contains, and size
+    @Test
+    public void testNoArgsConstructor_Empty() {
+        Set<String> test = this.constructorTest();
+        Set<String> expected = this.constructorRef();
 
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testSet3aConstructors() {
+        Set<String> test = this.constructorTest();
+        Set<String> expected = this.constructorRef();
+
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testAdd_Empty() {
+
+        Set<String> test = this.createFromArgsTest();
+        Set<String> expected = this.createFromArgsRef();
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testAdd_Regular() {
+
+        Set<String> test = this.createFromArgsTest("James", "1", "Tony", "2");
+        Set<String> expected = this.createFromArgsRef("James", "1", "Tony",
+                "2");
+        test.add("qwertyuiopo");
+        expected.add("qwertyuiopo");
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testRemove_Regular() {
+
+        Set<String> test = this.createFromArgsTest("James", "1", "Tony", "2");
+        Set<String> expected = this.createFromArgsRef("James", "1", "Tony",
+                "2");
+        test.add("qwertyuiopo");
+        expected.add("qwertyuiopo");
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testContains_yes() {
+
+        Set<String> test = this.createFromArgsTest("James", "1", "Tony", "2");
+        Set<String> expected = this.createFromArgsRef("James", "1", "Tony",
+                "2");
+        boolean testContains = test.contains("James");
+        boolean expectedContains = expected.contains("Jeames");
+        assertEquals(testContains, expectedContains);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testContains_no() {
+
+        Set<String> test = this.createFromArgsTest("James", "1", "Tony", "2");
+        Set<String> expected = this.createFromArgsRef("James", "1", "Tony",
+                "2");
+
+        boolean testContains = test.contains("NotJames");
+        boolean expectedContains = expected.contains("NotJames");
+
+        assertEquals(testContains, expectedContains);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testSize_1() {
+
+        Set<String> test = this.createFromArgsTest("2");
+        Set<String> expected = this.createFromArgsRef("2");
+
+        int testSize = test.size();
+        int expectedSize = expected.size();
+
+        assertEquals(testSize, expectedSize);
+        assertEquals(expected, test);
+    }
 }
