@@ -77,6 +77,7 @@ public abstract class SetTest {
         Set<String> expected = this.constructorRef();
 
         assertEquals(expected, test);
+        //this test case passed
     }
 
     @Test
@@ -85,14 +86,7 @@ public abstract class SetTest {
         Set<String> expected = this.constructorRef();
 
         assertEquals(expected, test);
-    }
-
-    @Test
-    public void testAdd_Empty() {
-
-        Set<String> test = this.createFromArgsTest();
-        Set<String> expected = this.createFromArgsRef();
-        assertEquals(expected, test);
+        //this test case also passed
     }
 
     @Test
@@ -118,8 +112,19 @@ public abstract class SetTest {
     }
 
     @Test
-    public void testContains_yes() {
+    public void testAny_Regular() {
+//*****Don't know how to do this test case
+        Set<String> test = this.createFromArgsTest("James", "1", "Tony", "2");
+        Set<String> expected = this.createFromArgsRef("James", "1", "Tony",
+                "2");
+        test.add("qwertyuiopo");
+        expected.add("qwertyuiopo");
+        assertEquals(expected, test);
+    }
 
+    @Test
+    public void testContains_yes() {
+//NOTE ******** cannpt be an empyty set
         Set<String> test = this.createFromArgsTest("James", "1", "Tony", "2");
         Set<String> expected = this.createFromArgsRef("James", "1", "Tony",
                 "2");
@@ -144,10 +149,38 @@ public abstract class SetTest {
     }
 
     @Test
+    public void testSize_0() {
+
+        Set<String> test = this.createFromArgsTest();
+        Set<String> expected = this.createFromArgsRef();
+
+        int testSize = test.size();
+        int expectedSize = expected.size();
+
+        assertEquals(testSize, expectedSize);
+        assertEquals(expected, test);
+    }
+
+    @Test
     public void testSize_1() {
 
         Set<String> test = this.createFromArgsTest("2");
         Set<String> expected = this.createFromArgsRef("2");
+
+        int testSize = test.size();
+        int expectedSize = expected.size();
+
+        assertEquals(testSize, expectedSize);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public void testSize_nultiple() {
+
+        Set<String> test = this.createFromArgsTest("2", "q", "w", "5", "hh",
+                "bob");
+        Set<String> expected = this.createFromArgsRef("2", "q", "w", "5", "hh",
+                "bob");
 
         int testSize = test.size();
         int expectedSize = expected.size();

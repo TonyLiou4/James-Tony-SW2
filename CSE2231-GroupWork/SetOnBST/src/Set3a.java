@@ -91,17 +91,19 @@ public class Set3a<T extends Comparable<T>> extends SetSecondary<T> {
         assert t != null : "Violation of: t is not null";
         assert x != null : "Violation of: x is not null";
 
+        // ******** this method is not working correctly according to our test case
         BinaryTree<T> left = t.newInstance();
         BinaryTree<T> right = t.newInstance();
         if (t.size() != 0) {
             T root = t.disassemble(left, right);
             if (x.compareTo(root) < 0) {
                 insertInTree(left, x);
-            } else if (x.compareTo(root) > 0) {
+            } else {
                 insertInTree(right, x);
             }
             t.assemble(root, left, right);
         }
+        t.assemble(x, left, right);
     }
 
     /**
@@ -123,18 +125,26 @@ public class Set3a<T extends Comparable<T>> extends SetSecondary<T> {
         assert t != null : "Violation of: t is not null";
         assert t.size() > 0 : "Violation of: |t| > 0";
 
-        BinaryTree<T> left = t.newInstance();
-        BinaryTree<T> right = t.newInstance();
-        if (t.size() != 0) {
-            T root = t.disassemble(left, right);
-            if (x.compareTo(root) < 0) {
-                insertInTree(left, x);
-            } else if (x.compareTo(root) > 0) {
-                insertInTree(right, x);
-            }
-            t.assemble(root, left, right);
+        BinaryTree<T> lt = t.newInstance();
+        BinaryTree<T> rt = t.newInstance();
+
+        T root = t.disassemble(lt, rt);
+        T returnVal = root;
+
+        // if the left tree is not empty, use recursion to get the smallest T value
+        if (lt.size() != 0) {
+            returnVal = removeSmallest(lt);
+            t.assemble(root, lt, rt);
         }
-        return result;
+        /*
+         * if the left tree is empty, we want to remove the root and set the
+         * right subtree to the original tree.
+         */
+        else {
+            t.transferFrom(rt);
+        }
+
+        return returnVal;
     }
 
     /**
@@ -161,10 +171,21 @@ public class Set3a<T extends Comparable<T>> extends SetSecondary<T> {
         assert x != null : "Violation of: x is not null";
         assert t.size() > 0 : "Violation of: x is in labels(t)";
 
-        // TODO - fill in body
+        BinaryTree<T> lt = t.newInstance();
+        BinaryTree<T> rt = t.newInstance();
 
-        // This line added just to make the component compilable.
-        return null;
+        T returnVal = null;
+
+        if (t.size() != 0) {
+            T root = t.disassemble(lt, rt);
+            if (root != x) {
+                returnVal = removeSmallest(lt);
+                returnVal = removeSmallest(rt);
+            }
+            t.assemble(root, lt, rt);
+        }
+        return returnVal;
+
     }
 
     /**
@@ -248,6 +269,8 @@ public class Set3a<T extends Comparable<T>> extends SetSecondary<T> {
     public final T removeAny() {
         assert this.size() > 0 : "Violation of: this /= empty_set";
         return removeSmallest(this.tree);
+
+        // this have access to instance method set3a
     }
 
     @Override
