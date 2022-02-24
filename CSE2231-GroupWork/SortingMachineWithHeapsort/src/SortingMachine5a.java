@@ -61,7 +61,7 @@ import components.sortingmachine.SortingMachineSecondary;
  *   this = (false, $this.machineOrder, multiset_entries($this.heap[0, $this.heapSize)))
  * </pre>
  *
- * @author Put your name here
+ * @author Sungwoon Park and Tony Liou
  *
  */
 public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
@@ -239,6 +239,17 @@ public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
          */
 
         // TODO - fill in body
+
+        int left = 2 * top + 1;
+        int right = 2 * top + 2;
+
+        if (left < right) {
+            heapify(array, left, order);
+            heapify(array, right, order);
+
+            //do sonthing with left nad right
+        }
+
         // *** you must use the recursive algorithm discussed in class ***
 
     }
@@ -278,7 +289,10 @@ public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
          */
         T[] heap = (T[]) (new Object[q.length()]);
 
-        // TODO - fill in rest of body
+        if (q.length() != 0) {
+            heap[0] = q.dequeue();
+        }
+        //WTF are we suppose to do here???
 
         return heap;
     }
