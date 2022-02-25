@@ -61,7 +61,7 @@ import components.sortingmachine.SortingMachineSecondary;
  *   this = (false, $this.machineOrder, multiset_entries($this.heap[0, $this.heapSize)))
  * </pre>
  *
- * @author Sungwoon Park and Tony Liou
+ * @author Put your name here
  *
  */
 public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
@@ -83,12 +83,12 @@ public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
     /**
      * Entries.
      */
-    private Queue<T> entries;
+    private Queue<T> entries; //***********used for not extraction mode mode
 
     /**
      * Heap.
      */
-    private T[] heap;
+    private T[] heap; //*******used for extraction
 
     /**
      * Heap size.
@@ -182,18 +182,25 @@ public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
          * representation for a complete binary tree.
          */
 
+        //use James's code
         int left = 2 * top + 1;
-        boolean isHeap = true;
-        if (left <= last) { // there is non-empty left subtree
-            isHeap = (this.heap[top] <= this.heap[left])
-                    && isHeap(array, left, last);
-            int right = left + 1;
-            if (isHeap && (right <= last)) { // there is non-empty right subtree
-                isHeap = (array[top] <= array[right])
-                        && isHeap(array, right, last);
+        int right = 2 * top + 2;
+        int exchange = top;
+
+        if (left <= last) {
+            if (order.compare(array[left], array[exchange]) < 0) {
+                exchange = right;
             }
         }
-        return isHeap;
+        if (right <= last) {
+            if (order.compare(array[right], array[exchange]) < 0) {
+                exchange = right;
+            }
+        }
+        if (exchange != top) {
+            exchangeEntries(array, top, exchange);
+            siftDown(array, exchange, last, order);
+        }
         // *** you must use the recursive algorithm discussed in class ***
 
     }
@@ -240,15 +247,17 @@ public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
 
         // TODO - fill in body
 
+        //need to use ShiftDown and some other healper method
         int left = 2 * top + 1;
         int right = 2 * top + 2;
 
-        if (left < right) {
+        if (left < array.length) {
             heapify(array, left, order);
-            heapify(array, right, order);
-
-            //do sonthing with left nad right
         }
+        if (right < array.length) {
+            heapify(array, right, order);
+        }
+        siftDown(array, top, array.length - 1, order);
 
         // *** you must use the recursive algorithm discussed in class ***
 
@@ -288,12 +297,12 @@ public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
          * cannot fail.
          */
         T[] heap = (T[]) (new Object[q.length()]);
-
-        if (q.length() != 0) {
-            heap[0] = q.dequeue();
+        int length = q.length();
+        for (int i = 0; i < length; i++) {
+            T tempVal = q.dequeue();
+            heap[i] = tempVal;
         }
-        //WTF are we suppose to do here???
-
+        heapify(heap, 0, order);
         return heap;
     }
 
@@ -338,6 +347,9 @@ public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
          * No need to check the other requires clause, because it must be true
          * when using the Array representation for a complete binary tree.
          */
+
+        // this method is given
+
         int left = 2 * top + 1;
         boolean isHeap = true;
         if (left <= last) {
@@ -493,6 +505,8 @@ public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
         //what data stuctures is this building on????
 
         this.entries.enqueue(x);
+        //do we need to keep track of heapSize here?
+        //this.heapSize++;
 
         assert this.conventionHolds();
     }
@@ -505,8 +519,11 @@ public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
         this.insertionMode = false;
         //needs to do heap sort on this method
 
+        //build heap on that spots onto the heap
+
+        // Queue<T> q, Comparator<T> order into buildheap
+        this.heapSize = this.entries.length();
         this.heap = buildHeap(this.entries, this.machineOrder);
-        this.heapSize = this.heap.length;
 
         assert this.conventionHolds();
     }
@@ -517,14 +534,15 @@ public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
                 .isInInsertionMode() : "Violation of: not this.insertion_mode";
         assert this.size() > 0 : "Violation of: this.contents /= {}";
 
-        T result = this.heap[0];
+        // we are not allow to use isHeap in this method
+        T returnVal = this.heap[0];
+        exchangeEntries(this.heap, 0, this.heapSize - 1);
+        siftDown(this.heap, 0, this.heapSize - 2, this.machineOrder);
         this.heapSize--;
-        siftDown(this.heap, 0, this.heap.length, this.machineOrder);
-
         //needs work and check answer with TA
         assert this.conventionHolds();
         // Fix this line to return the result after checking the convention.
-        return result;
+        return returnVal;
     }
 
     @Override
@@ -546,7 +564,11 @@ public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
 //this is probabaly not correct
         assert this.conventionHolds();
         // Fix this line to return the result after checking the convention.
-        return this.heapSize;
+        if (this.insertionMode) {
+            return this.entries.length();
+        } else {
+            return this.heapSize;
+        }
     }
 
     @Override
@@ -558,6 +580,7 @@ public class SortingMachine5a<T> extends SortingMachineSecondary<T> {
      * Implementation of {@code Iterator} interface for
      * {@code SortingMachine5a}.
      */
+
     private final class SortingMachine5aIterator implements Iterator<T> {
 
         /**

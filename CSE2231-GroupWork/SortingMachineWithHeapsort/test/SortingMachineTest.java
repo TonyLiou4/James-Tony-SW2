@@ -10,7 +10,7 @@ import components.sortingmachine.SortingMachine;
  * JUnit test fixture for {@code SortingMachine<String>}'s constructor and
  * kernel methods.
  *
- * @author Put your name here
+ * @author Sungwoon Park and Tony Liou
  *
  */
 public abstract class SortingMachineTest {
@@ -128,16 +128,115 @@ public abstract class SortingMachineTest {
         assertEquals(mExpected, m);
     }
 
-    @Test
-    public final void testAddEmpty() {
-        SortingMachine<String> m = this.createFromArgsTest(ORDER, true);
-        SortingMachine<String> mExpected = this.createFromArgsRef(ORDER, true,
-                "green");
-        m.add("green");
-        assertEquals(mExpected, m);
-    }
-
     // TODO - add test cases for add, changeToExtractionMode, removeFirst,
     // isInInsertionMode, order, and size
+
+    @Test
+    public final void testRemoveFirst_one() {
+        SortingMachine<String> test = this.createFromArgsTest(ORDER, false,
+                "green");
+        SortingMachine<String> expected = this.createFromArgsRef(ORDER, false,
+                "green");
+
+        String tempTest = test.removeFirst();
+        String tempExpected = expected.removeFirst();
+
+        assertEquals(tempExpected, tempTest);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public final void testRemoveFirst_multi() {
+        SortingMachine<String> test = this.createFromArgsTest(ORDER, false,
+                "green", "red", "blue");
+        SortingMachine<String> expected = this.createFromArgsRef(ORDER, false,
+                "green", "red", "blue");
+
+        String tempTest = test.removeFirst();
+        String tempExpected = expected.removeFirst();
+
+        assertEquals(tempExpected, tempTest);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public final void testINsertionMode_false() {
+        SortingMachine<String> test = this.createFromArgsTest(ORDER, false,
+                "green", "red", "blue");
+        SortingMachine<String> expected = this.createFromArgsRef(ORDER, false,
+                "green", "red", "blue");
+
+        boolean tempTest = test.isInInsertionMode();
+        boolean tempExpected = expected.isInInsertionMode();
+
+        assertEquals(tempExpected, tempTest);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public final void testINsertionMode_true() {
+        SortingMachine<String> test = this.createFromArgsTest(ORDER, true,
+                "green", "red", "blue");
+        SortingMachine<String> expected = this.createFromArgsRef(ORDER, true,
+                "green", "red", "blue");
+
+        boolean tempTest = test.isInInsertionMode();
+        boolean tempExpected = expected.isInInsertionMode();
+
+        assertEquals(tempExpected, tempTest);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public final void testSize_emptyFalse() {
+        SortingMachine<String> test = this.createFromArgsTest(ORDER, false);
+        SortingMachine<String> expected = this.createFromArgsRef(ORDER, false);
+
+        int tempTest = test.size();
+        int tempExpected = expected.size();
+
+        assertEquals(tempExpected, tempTest);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public final void testSize_empty() {
+        SortingMachine<String> test = this.createFromArgsTest(ORDER, true);
+        SortingMachine<String> expected = this.createFromArgsRef(ORDER, true);
+
+        int tempTest = test.size();
+        int tempExpected = expected.size();
+
+        assertEquals(tempExpected, tempTest);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public final void testSize_one() {
+        SortingMachine<String> test = this.createFromArgsTest(ORDER, true,
+                "green");
+        SortingMachine<String> expected = this.createFromArgsRef(ORDER, true,
+                "green");
+
+        int tempTest = test.size();
+        int tempExpected = expected.size();
+
+        assertEquals(tempExpected, tempTest);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public final void testSize_multi() {
+        SortingMachine<String> test = this.createFromArgsTest(ORDER, true,
+                "green", "red", "blue");
+        SortingMachine<String> expected = this.createFromArgsRef(ORDER, true,
+                "green", "red", "blue");
+
+        int tempTest = test.size();
+        int tempExpected = expected.size();
+
+        assertEquals(tempExpected, tempTest);
+        assertEquals(expected, test);
+    }
 
 }
