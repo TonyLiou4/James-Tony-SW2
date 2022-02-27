@@ -131,6 +131,9 @@ public abstract class SortingMachineTest {
     // TODO - add test cases for add, changeToExtractionMode, removeFirst,
     // isInInsertionMode, order, and size
 
+    /*
+     * Test case for removeFrist method
+     */
     @Test
     public final void testRemoveFirst_one() {
         SortingMachine<String> test = this.createFromArgsTest(ORDER, false,
@@ -159,8 +162,11 @@ public abstract class SortingMachineTest {
         assertEquals(expected, test);
     }
 
+    /*
+     * Test Case for insertion mode
+     */
     @Test
-    public final void testINsertionMode_false() {
+    public final void testInsertionMode_false() {
         SortingMachine<String> test = this.createFromArgsTest(ORDER, false,
                 "green", "red", "blue");
         SortingMachine<String> expected = this.createFromArgsRef(ORDER, false,
@@ -174,7 +180,7 @@ public abstract class SortingMachineTest {
     }
 
     @Test
-    public final void testINsertionMode_true() {
+    public final void testInsertionMode_true() {
         SortingMachine<String> test = this.createFromArgsTest(ORDER, true,
                 "green", "red", "blue");
         SortingMachine<String> expected = this.createFromArgsRef(ORDER, true,
@@ -187,11 +193,71 @@ public abstract class SortingMachineTest {
         assertEquals(expected, test);
     }
 
+    /*
+     * Test case for comparator order method
+     */
+    @Test
+    public final void testOrder_insertFalse() {
+        SortingMachine<String> test = this.createFromArgsTest(ORDER, false);
+        SortingMachine<String> expected = this.createFromArgsRef(ORDER, false);
+
+        Comparator<String> tempTest = test.order();
+        Comparator<String> tempExpected = expected.order();
+
+        assertEquals(tempExpected, tempTest);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public final void testOrder_insertTrue() {
+        SortingMachine<String> test = this.createFromArgsTest(ORDER, true);
+        SortingMachine<String> expected = this.createFromArgsRef(ORDER, true);
+
+        Comparator<String> tempTest = test.order();
+        Comparator<String> tempExpected = expected.order();
+
+        assertEquals(tempExpected, tempTest);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public final void testOrder_insertTrueMultiElement() {
+        SortingMachine<String> test = this.createFromArgsTest(ORDER, true,
+                "green", "red", "blue");
+        SortingMachine<String> expected = this.createFromArgsRef(ORDER, true,
+                "green", "red", "blue");
+
+        Comparator<String> tempTest = test.order();
+        Comparator<String> tempExpected = expected.order();
+
+        assertEquals(tempExpected, tempTest);
+        assertEquals(expected, test);
+    }
+
+    @Test
+    public final void testOrder_insertFalseMultiElement() {
+        SortingMachine<String> test = this.createFromArgsTest(ORDER, false,
+                "green", "red", "blue");
+        SortingMachine<String> expected = this.createFromArgsRef(ORDER, false,
+                "green", "red", "blue");
+
+        Comparator<String> tempTest = test.order();
+        Comparator<String> tempExpected = expected.order();
+
+        assertEquals(tempExpected, tempTest);
+        assertEquals(expected, test);
+    }
+
+    /*
+     * Test case for size method
+     */
     @Test
     public final void testSize_emptyFalse() {
         SortingMachine<String> test = this.createFromArgsTest(ORDER, false);
         SortingMachine<String> expected = this.createFromArgsRef(ORDER, false);
 
+        // do we even need this method since the false value
+        // is onlt related to insertion mode
         int tempTest = test.size();
         int tempExpected = expected.size();
 
