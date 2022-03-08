@@ -175,18 +175,26 @@ public class List3<T> extends ListSecondary<T> {
      * Creator of initial representation.
      */
     private void createNewRep() {
+        //these are the 2 smart nodes
+        this.preStart = new Node();
+        this.lastLeft = this.preStart;
+        this.postFinish = new Node();
+        //have 1 line of code for every reference we draw on empty node diagram
+        this.preStart.next = this.postFinish;
+        this.postFinish.previous = this.preStart;
 
-        // TODO - fill in body
+        this.leftLength = 0;
+        this.rightLength = 0;
 
+        //check the stack with linked list lab
     }
 
     /**
      * No-argument constructor.
      */
     public List3() {
-
-        // TODO - fill in body
-
+        //copied from stackWith linked list labs
+        this.createNewRep();
         assert this.conventionHolds();
     }
 
@@ -231,8 +239,26 @@ public class List3<T> extends ListSecondary<T> {
     public final void addRightFront(T x) {
         assert x != null : "Violation of: x is not null";
 
-        // TODO - fill in body
+//        this.preStart = new Node();
+//        this.lastLeft = this.preStart;
+//        this.postFinish = new Node();
+//        //have 1 line of code for every reference we draw on empty node diagram
+//        this.preStart.next = this.postFinish;
+//        this.postFinish.previous = this.preStart;
+//
+//        this.leftLength = 0;
+//        this.rightLength = 0;
 
+        Node temp1 = new Node(); //create a temporary new node
+
+        //condition always true when empty list
+        temp1.previous = this.lastLeft;
+        temp1.data = x;
+        temp1.next = this.lastLeft.next;
+
+        this.lastLeft.next = temp1;
+        temp1.next.previous = temp1;
+        this.rightLength++;
         assert this.conventionHolds();
     }
 
@@ -240,18 +266,20 @@ public class List3<T> extends ListSecondary<T> {
     public final T removeRightFront() {
         assert this.rightLength() > 0 : "Violation of: this.right /= <>";
 
-        // TODO - fill in body
-
+        Node temp1 = this.lastLeft.next;
+        temp1.next.previous = temp1.previous;
+        this.lastLeft.next.next.previous = this.lastLeft;
+        this.rightLength--;
         assert this.conventionHolds();
         // Fix this line to return the result after checking the convention.
-        return null;
+        return temp1.data;
     }
 
     @Override
     public final void advance() {
         assert this.rightLength() > 0 : "Violation of: this.right /= <>";
 
-        // TODO - fill in body
+        this.rightLength++;
 
         assert this.conventionHolds();
     }
@@ -259,29 +287,25 @@ public class List3<T> extends ListSecondary<T> {
     @Override
     public final void moveToStart() {
 
-        // TODO - fill in body
+        //if (!this.lastLeft.equals(this.preStart)) {
+        this.lastLeft = this.preStart;
 
+        this.rightLength += this.rightLength;
+        this.leftLength = 0;
+        //always running in constant time
         assert this.conventionHolds();
     }
 
     @Override
     public final int leftLength() {
-
-        // TODO - fill in body
-
         assert this.conventionHolds();
-        // Fix this line to return the result after checking the convention.
-        return 0;
+        return this.leftLength;
     }
 
     @Override
     public final int rightLength() {
-
-        // TODO - fill in body
-
         assert this.conventionHolds();
-        // Fix this line to return the result after checking the convention.
-        return 0;
+        return this.rightLength;
     }
 
     @Override
@@ -345,7 +369,9 @@ public class List3<T> extends ListSecondary<T> {
     @Override
     public final void moveToFinish() {
 
-        // TODO - fill in body
+        this.lastLeft = this.postFinish.previous;
+        this.leftLength += this.rightLength;
+        this.rightLength = 0;
 
         assert this.conventionHolds();
     }
