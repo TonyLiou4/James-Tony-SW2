@@ -15,7 +15,7 @@ import components.utilities.Tokenizer;
  *             and [$this.body is a BLOCK statement]
  * @correspondence this = ($this.name, $this.context, $this.body)
  *
- * @author Put your name here
+ * @author Sungwoon Park and Tony Liou
  *
  */
 public class Program2 extends ProgramSecondary {
@@ -106,9 +106,9 @@ public class Program2 extends ProgramSecondary {
      */
     private void createNewRep() {
 
-        // TODO - fill in body
-        // Make sure to use Statement1 from the library
-        // Use Map1L for the context if you want the asserts below to match
+        this.name = "unnamed";
+        this.context = new Map1L<>();
+        this.body = new Statement1();
 
     }
 
@@ -169,8 +169,7 @@ public class Program2 extends ProgramSecondary {
         assert Tokenizer.isIdentifier(n) : ""
                 + "Violation of: n is a valid IDENTIFIER";
 
-        // TODO - fill in body
-
+        this.name = n;
     }
 
     @Override
@@ -188,7 +187,7 @@ public class Program2 extends ProgramSecondary {
         // TODO - fill in body
 
         // Fix this line to return the result.
-        return null;
+        return this.context.newInstance();
     }
 
     @Override
@@ -203,7 +202,8 @@ public class Program2 extends ProgramSecondary {
         assert allBlocks(c) : "Violation of: bodies in c"
                 + " are all BLOCK statements";
 
-        // TODO - fill in body
+        Map<String, Statement> temp = this.context.newInstance();
+        
 
     }
 
