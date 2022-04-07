@@ -57,10 +57,26 @@ public final class Program1Parse1 extends Program1 {
         assert tokens.length() > 0 && tokens.front().equals("INSTRUCTION") : ""
                 + "Violation of: <\"INSTRUCTION\"> is proper prefix of tokens";
 
+        tokens.dequeue(); //instruction
         String result = tokens.dequeue();
-        boolean something = false;
+        if (result.equals("move") || result.equals("turnLeft")
+                || result.equals("turnRight") || result.equals("infect")
+                || result.equals("skip")) {
+            Reporter.assertElseFatalError(false,
+                    "Not valid instruction name. Instruction name could not be primitive call.");
+        }
+        Reporter.assertElseFatalError(Tokenizer.isIdentifier(result),
+                "Instruction name " + result + " is not a valid name");
 
-        Reporter.assertElseFatalError(something, "name is not valid");
+        body.parseBlock(tokens);
+
+        //end
+        Reporter.assertElseFatalError(!Tokenizer.isIdentifier("END"),
+                "Missing the word END");
+        //end name match
+        Reporter.assertElseFatalError(!tokens.dequeue().equals(result),
+                "INSTRUCTION " + result
+                        + " doesn't have matching name in the end.");
 
         return result;
     }
@@ -94,7 +110,7 @@ public final class Program1Parse1 extends Program1 {
         assert tokens.length() > 0 : ""
                 + "Violation of: Tokenizer.END_OF_INPUT is a suffix of tokens";
 
-        //check if ord program exist
+        //check if the word "program" exist
         Reporter.assertElseFatalError( tokens.dequeue().equals("PROGRAM"), "Missing PROGRAM");
         //save the name of file
         String name = tokens.dequeue();
@@ -104,7 +120,7 @@ public final class Program1Parse1 extends Program1 {
         this.setName(name);
 
         //loop for instructions blocks and call parse iNsructions
-        for(
+        for(int i=0; i)
         Reporter.assertElseFatalError( tokens.dequeue().equals("IS"), "Missing IS. ");
 
 
