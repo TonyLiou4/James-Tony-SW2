@@ -106,12 +106,7 @@ public final class TagCloudGenerator {
 
         // kth index of the text String
         int k = position;
-        /*
-         * Iterate while: First, k is smaller than the length of the text String
-         * Second, character at the index of position and k of the text String
-         * are both the objects in the Set separators or both are not the
-         * objects in the separators Set
-         */
+
         while (k < text.length()
                 && separators.contains(text.charAt(position)) == separators
                         .contains(text.charAt(k))) {
@@ -270,10 +265,11 @@ public final class TagCloudGenerator {
 
     }
 
-    private static void sortingMachineProcessor(
+    private static void sortingShit(
             SortingMachine<Map.Pair<String, Integer>> count,
             SortingMachine<Map.Pair<String, Integer>> alpha,
-            Map<String, Integer> wordAndCount, SimpleWriter output) {
+            Map<String, Integer> wordAndCount, SimpleWriter output,
+            SimpleReader inputFile) {
 
         //add the extration mode from map
         int length = count.size();
@@ -284,12 +280,27 @@ public final class TagCloudGenerator {
         //now we need to sort the sortitng machine
         count.changeToExtractionMode();
 
-        //add number to alphga data stucture
-        alpha.add(count.removeFirst());
-
         //add the elements to alpha in order
         int length2 = count.size();
         for (int i = 0; i < length2; i++) {
+            alpha.add(count.removeFirst());
+        }
+
+        //largest and smallest value
+        int large = 0;
+        int small = 0;
+
+        if (count.size() > 0) {
+            Map.Pair<String, Integer> temp = count.removeFirst();
+            large = temp.value();
+            //add number to alphga data stucture
+            alpha.add(count.removeFirst());
+        }
+
+        if (count.size() > 0) {
+            Map.Pair<String, Integer> tempp = count.removeFirst();
+            small = tempp.value();
+            //add number to alphga data stucture
             alpha.add(count.removeFirst());
         }
 
