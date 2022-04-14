@@ -1,8 +1,8 @@
 import java.util.Comparator;
 
 import components.map.Map;
+import components.map.Map.Pair;
 import components.map.Map1L;
-import components.queue.Queue;
 import components.set.Set;
 import components.set.Set1L;
 import components.simplereader.SimpleReader;
@@ -13,15 +13,28 @@ import components.sortingmachine.SortingMachine;
 import components.sortingmachine.SortingMachine1L;
 
 /**
- * Put a short phrase describing the program here.
+ * This program will take a user input file and outputs a nicely formated HTML
+ * table to tell user the words in alphabetical order and its respective amount
+ * that exist in that file. This program is case sensitive.
  *
- * @author Put your name here
- *
+ * @author Tony Liou and Sungwoon Park
  */
 public final class TagCloudGenerator {
 
     /**
-     * Compare {@code String}s in alphabetical order.
+     * Default constructor--private to prevent instantiation.
+     */
+    private TagCloudGenerator() {
+        // no code needed here
+    }
+
+    /**
+     * Final separators.
+     */
+    private static final String SEPARATORS = " \\t\\n\\r,-.!?[]'_;:/() ";
+
+    /**
+     * Compare {@code String}s in lexicographic order.
      */
     private static class StringLT
             implements Comparator<Map.Pair<String, Integer>> {
@@ -29,7 +42,7 @@ public final class TagCloudGenerator {
         public int compare(Map.Pair<String, Integer> o1,
                 Map.Pair<String, Integer> o2) {
             //use the value (the number) from the map to compare
-            return o1.value().compareTo(o2.value());
+            return o1.key().compareToIgnoreCase(o2.key());
         }
     }
 
@@ -42,324 +55,290 @@ public final class TagCloudGenerator {
         public int compare(Map.Pair<String, Integer> o1,
                 Map.Pair<String, Integer> o2) {
             //use the value (the number) from the map to compare
-            return o1.key().compareTo(o2.key());
+            return o2.value().compareTo(o1.value());
         }
     }
 
     /**
-     * Generates the set of characters in the given {@code String} into the *
-     * given {@code Set}.
+     * This method add a whole set of character into a set.
      *
-     * @param str
-     *            the given {@code String}
-     * @param charSet
-     *            the {@code Set} to be replaced
-     * @replaces charSet
-     * @ensures charSet = entries(str)
+     * @param separators
+     *            = entries(SEPARATORS)
+     * @updates {@code separators}
+     * @return <Set<Character> separators>
      */
-    private static void generateElements(String str, Set<Character> charSet) {
-        // iterate through every character in the string
-        for (int i = 0; i < str.length(); i++) {
-            if (!charSet.contains(str.charAt(i))) {
-                char tempChar = str.charAt(i);
-                charSet.add(tempChar);
+    private static Set<Character> seperaters(Set<Character> separators) {
+        for (int i = 0; i < SEPARATORS.length(); i++) {
+            if (!separators.contains(SEPARATORS.charAt(i))) {
+                separators.add(SEPARATORS.charAt(i));
             }
         }
+        return separators;
     }
 
     /**
-     * Returns the first "word" (maximal length string of characters not in
-     * {@code separators}) or "separator string" (maximal length string of
-     * characters in {@code separators}) in the given {@code text} starting at
-     * the given {@code position}.
+     * This method will process the word from input file and save each word and
+     * its respective word count to a map.
      *
-     * @param text
-     *            the {@code String} from which to get the word or separator
-     *            string
-     * @param position
-     *            the starting index
-     * @param separators
-     *            the {@code Set} of separator characters
-     * @return the first word or separator string found in {@code text} starting
-     *         at index {@code position}
-     * @requires 0 <= position < |text|
-     * @ensures <pre>
-     * nextWordOrSeparator =
-     *   text[position, position + |nextWordOrSeparator|)  and
-     * if entries(text[position, position + 1)) intersection separators = {}
-     * then
-     *   entries(nextWordOrSeparator) intersection separators = {}  and
-     *   (position + |nextWordOrSeparator| = |text|  or
-     *    entries(text[position, position + |nextWordOrSeparator| + 1))
-     *      intersection separators /= {})
-     * else
-     *   entries(nextWordOrSeparator) is subset of separators  and
-     *   (position + |nextWordOrSeparator| = |text|  or
-     *    entries(text[position, position + |nextWordOrSeparator| + 1))
-     *      is not subset of separators)
-     * </pre>
+     * @param input
+     *            input stream from the file
+     * @param wrdCounterMap
+     *            a map of the word and its word counts
+     * @requires |input| > 0
+     * @updates wrdCounterMap
+     * @ensures wrdCountMap contains list of words in key and numbers of
+     *          respective words in value
      */
-    private static String nextWordOrSeparator(String text, int position,
-            Set<Character> separators) {
-        // initialize the return String
-        String returnString = "";
-
-        // kth index of the text String
-        int k = position;
-
-        while (k < text.length()
-                && separators.contains(text.charAt(position)) == separators
-                        .contains(text.charAt(k))) {
-            returnString += text.charAt(k);
-            // increment the k(index)
-            k++;
-        }
-        return returnString;
-    }
-
-    /**
-     * Stores all the word in the Queue separatedWord
-     *
-     * @param inputFile
-     *            name of the input file
-     * @param separatedWord
-     *            the queue
-     * @requires File named inputFile exists but is not open. Queue
-     *           separatedWord to be empty
-     * @ensures every word in the file to be in the Queue separatedWord
-     */
-    private static void generateQueue(String inputFile,
-            Queue<String> separatedWord) {
-        SimpleReader input = new SimpleReader1L(inputFile);
-
-        // sepString is all the possible separators
-        String sepString = " .,!@#$%^&*()-_+=?[]{}/<>\'\";:~`\\|\t";
+    private static void wordProcessor(SimpleReader input,
+            Map<String, Integer> wrdCounterMap,
+            Map<Pair<String, Integer>, Integer> fontMap) {
+        assert input != null : "Violation of: input is not null";
+        assert input.isOpen() : "Violation of: input.is_open";
 
         Set<Character> separators = new Set1L<>();
-
-        // stores all the separators at the Set separators
-        generateElements(sepString, separators);
+        seperaters(separators);
 
         while (!input.atEOS()) {
-            // wordsWithSep: one line from the input file
-            String wordsWithSep = input.nextLine();
-            int lengthOfLine = wordsWithSep.length();
-            String value = "";
-            int pos = 0;
+            String wrd = input.nextLine().toLowerCase();
+            int posi = 0;
+            //gets rid of empty lines in the file
+            while (posi < wrd.length()) {
+                String theWord = (nextWord(wrd, posi, separators));
+                //  posi += theWord.length() + 1;
 
-            while (pos < lengthOfLine) {
-                value = nextWordOrSeparator(wordsWithSep, pos, separators);
+                if (!separators.contains(theWord.charAt(0))) {
+                    if (!wrdCounterMap.hasKey(theWord)) {
+                        wrdCounterMap.add(theWord, 1);
+//                        wrdCounterMap.replaceValue(theWord,
+//                                (wrdCounterMap.value(theWord) + 1));
+                    } else {
+                        wrdCounterMap.replaceValue(theWord,
+                                wrdCounterMap.value(theWord) + 1);
 
-                // stores the value to the queue if it is not a separator
-                if (!separators.contains(value.charAt(0))) {
-                    separatedWord.enqueue(value);
+                    }
                 }
-
-                pos += value.length();
+                posi += theWord.length();
             }
         }
+
+//        //  Map<Pair<String, Integer>, Integer> fontMap = new Map1L<Pair<String, Integer>, Integer>();
+//        Comparator<Map.Pair<String, Integer>> sorter = new IntegerLT();
+//        SortingMachine<Map.Pair<String, Integer>> sortCount = new SortingMachine1L<Map.Pair<String, Integer>>(
+//                sorter);
+//
+//        //fonts here if we want
+//        int fMax = 37;
+//        double maxCount = 0;
+//        double minCount = Integer.MAX_VALUE;
+//        Map<String, Integer> temp = wrdCounterMap.newInstance();
+//        while (wrdCounterMap.size() != 0) {
+//            Map.Pair<String, Integer> removed = wrdCounterMap.removeAny();
+//            double valueRemoved = removed.value().doubleValue();
+//            if (valueRemoved > maxCount) {
+//                maxCount = valueRemoved;
+//            } else if (valueRemoved < minCount) {
+//                minCount = valueRemoved;
+//            }
+//            sortCount.add(removed);
+//            temp.add(removed.key(), removed.value());
+//        }
+//        wrdCounterMap.transferFrom(temp);
+//        sortCount.changeToExtractionMode();
+//        while (sortCount.size() > 0) {
+//            int fontSize = 0;
+//            Pair<String, Integer> removedCount = sortCount.removeFirst();
+//            int valueCount = removedCount.value();
+//            if (valueCount > minCount) {
+//                double font = Math.ceil((fMax * (valueCount - minCount)
+//                        / (maxCount - minCount)));
+//                fontSize = (int) font;
+//                fontSize += 9;
+//            }
+//            fontMap.add(removedCount, fontSize);
+//        }
     }
 
     /**
-     * Makes the Queue words in the lexicographic order
+     * This method add words from the map to queue then sort the queue in
+     * alphabetical order.
      *
-     * @param words
-     *            the queue
-     * @requires Queue words to be empty
-     * @ensures the String elements in the Queue words is in lexicographic order
+     * @param wrdCounterMap
+     *            a map of the word and its word count
+     * @param wordQ
+     *            a queue of the word
+     * @requires |wordQ| > 0
+     * @ensures {@code wrdCOunterMap} is in order based on {@code wordQ}
      */
-    private static void lexicographicalOrder(Queue<String> words) {
-        /*
-         * Sort lines into non-decreasing lexicographic order
-         */
-        Comparator<String> cs = new StringLT();
-        words.sort(cs);
-
-    }
+//    private static void sorting(Map<String, Integer> wrdCounterMap,
+//            Queue<String> wordQ) {
+//        for (Pair<String, Integer> pair : wrdCounterMap) {
+//            wordQ.enqueue(pair.key());
+//        }
+//        Comparator<String> inOrder = new StringLT();
+//        wordQ.sort(inOrder);
+//    }
 
     /**
-     * Stores the word and the corresponding occurrence to the Map
+     * This method will return the first word in the given definition starting
+     * from the given starting position. Got this from glossary project.
      *
-     * @param words
-     *            the queue
-     * @param map
-     *            the word -> the occurrence
-     * @requires Map words to be empty
-     * @ensures [map contains word -> number of occurrence]
+     * @param wrd
+     *            a string of word
+     * @param posi
+     *            position of starting index
+     * @param separators
+     *            stores a set of characters to use as separators
+     *
+     * @requires 0<= posi<= |wrd|
+     * @ensures <pre>
+     * nextWordOrSeparator = wrd[posi, posi + |separators|)
+     * and if entries(wrd[posi, posi + 1)) intersection separators = {}
+     * then entries(nextWord) intersection separators = {} and
+     * (posi + |nextWord| = |wrd| or
+     * entries(wrd[posi, posi + |nextWord| + 1))
+     * intersection separators /= {}) else entries(nextWord)
+     * is subset of separators and (posi + |nextWord| =
+     * |wrd| or entries(wrd[posi, posi +
+     * |nextWord| + 1)) is not subset of separators)
+     * </pre>
+     * @return String of the next word
      */
-    private static void generateMap(Queue<String> words,
-            Map<String, Integer> map) {
-        // numberOfWords: # of words in the given input file
-        int numberOfWords = words.length();
-        // wordUsed: used to figure out if the word is already in the Map or not
-        boolean wordUsed = false;
+    private static String nextWord(String wrd, int posi,
+            Set<Character> separators) {
+        assert wrd != null : "Violation of: text is not null";
+        assert separators != null : "Violation of: separators is not null";
+        assert 0 <= posi : "Violation of: 0 <= position";
+        assert posi < wrd.length() : "Violation of: position < |definition|";
 
-        for (int i = 0; i < numberOfWords; i++) {
-            String oneWord = words.dequeue();
-            wordUsed = map.hasKey(oneWord);
-
-            // if the word was already stored to the Map
-            if (wordUsed) {
-                int numUsed = map.value(oneWord);
-                // add one to the value
-                int updated = numUsed + 1;
-                map.replaceValue(oneWord, updated);
-            }
-            // if the word was not stored to the Map
-            else {
-                map.add(oneWord, 1);
-            }
-            // place back the taken out word
-            words.enqueue(oneWord);
+        int i = posi;
+        boolean temp = separators.contains(wrd.charAt(posi));
+        while (i < wrd.length() && separators.contains(wrd.charAt(i)) == temp) {
+            i++;
         }
+        String s = wrd.substring(posi, i);
+        return s;
     }
 
     /**
-     * Generates the html file
+     * This method will print out the entire HTML file that is required to
+     * display every word and its word count nicely for the client.
      *
-     * @param output
-     *            the output stream to write the html codes
-     * @param words
-     *            the queue
-     * @param map
-     *            the map
+     * @param outToFile
+     *            the output stream wring to the file
+     * @param input
+     *            output stream to my file
      * @param inputFile
-     *            user input file
-     * @requires Queue words has String elements in it
-     * @ensures generates the correct html formated file to the user inputed
-     *          output file
+     *            a string of the words from the input file
+     * @requires |word| > 0
+     * @ensures outToFile contains code in html format
      */
-    private static void printPage(SimpleWriter output, Queue<String> words,
-            Map<String, Integer> map, String inputFile,
+    private static void printContentToFile(SimpleWriter outToFile,
+            SimpleReader input, String inputFile,
             SortingMachine<Map.Pair<String, Integer>> count,
             SortingMachine<Map.Pair<String, Integer>> alpha) {
+        assert outToFile != null : "Violation of: output is not null";
+        assert outToFile.isOpen() : "Violation of: output.is_open";
 
-        output.println("<html>");
-        output.println("<head>");
-        output.println("<title>Project9</title>");
-        output.println("<link href=" + '"' + "doc/tagcloud.css" + '"' + " rel="
-                + '"' + "stylesheet" + '"' + " type =" + '"' + "text/css" + '"'
-                + ">");
+        outToFile.println("<html>");
+        outToFile.println("<head>");
+        outToFile.println("<title>Project9</title>");
+        outToFile.println("<link href=" + '"' + "doc/tagcloud.css" + '"'
+                + " rel=" + '"' + "stylesheet" + '"' + " type =" + '"'
+                + "text/css" + '"' + ">");
 
-        output.println("</head>");
-        output.println("<body>");
+        outToFile.println("</head>");
+        outToFile.println("<body>");
         // includes the name of the input file at the header
-        output.println("<h2> Top 100 words in " + inputFile + "</h2>");
-        output.println("<p class =" + '"' + "cbox" + '"' + ">");
+        outToFile.println("<h2> Top 100 words in " + inputFile + "</h2>");
+        outToFile.println("<p class =" + '"' + "cbox" + '"' + ">");
 
-        //print out opur decided font size order and format html
-        while (alpha.size() > 0) {
-            Map.Pair<String, Integer> pair = alpha.removeFirst();
-            int ttemp = pair.value();
-            int font = ttemp / 10;
-            output.println("<span style=" + '"' + "cursor:default" + '"'
-                    + " class=" + '"' + 'f' + font + '"' + " title=" + '"'
-                    + "count: " + pair.value() + '"' + ">" + pair.key()
-                    + "</span>");
-        }
+        Map<String, Integer> wrdCounterMap = new Map1L<>();
+        //      Queue<String> wordQ = new Queue1L<>();
 
-        output.println("</p>");
-        output.println("</div>");
-        output.println("</body>");
-        output.println("</html>");
+        Map<Pair<String, Integer>, Integer> fontMap = new Map1L<Pair<String, Integer>, Integer>();
 
-    }
+        wordProcessor(input, wrdCounterMap, fontMap);
+        //       sorting(wrdCounterMap, wordQ);
 
-    private static void sortingShit(
-            SortingMachine<Map.Pair<String, Integer>> count,
-            SortingMachine<Map.Pair<String, Integer>> alpha,
-            Map<String, Integer> wordAndCount, SimpleWriter output,
-            SimpleReader inputFile) {
+        //Use for loop to iterate over queue and output
+        //corresponding word count and print the word count to html
+//        for (String print : wordQ) {
+//            outToFile.print("<tr>\n<td>" + print + "</td>\n<td>"
+//                    + wrdCounterMap.value(print) + "</td></tr>");
+//        }
+
+        //process the soprting machine here
 
         //add the extration mode from map
-        int length = count.size();
-        for (int i = 0; i < length; i++) {
-            count.add(wordAndCount.removeAny());
+        while (wrdCounterMap.size() != 0) {
+            count.add(wrdCounterMap.removeAny());
         }
 
         //now we need to sort the sortitng machine
         count.changeToExtractionMode();
 
-        //add the elements to alpha in order
-        int length2 = count.size();
-        for (int i = 0; i < length2; i++) {
+        //sorting in alpha lexi order
+        int lengthg = count.size();
+        for (int i = 0; i < lengthg && i < 100; i++) {
             alpha.add(count.removeFirst());
         }
+        alpha.changeToExtractionMode();
 
-        //largest and smallest value
-        int large = 0;
-        int small = 0;
+        //*****************************************
 
-        if (count.size() > 0) {
-            Map.Pair<String, Integer> temp = count.removeFirst();
-            large = temp.value();
-            //add number to alphga data stucture
-            alpha.add(count.removeFirst());
+        System.out.println(count);
+        System.out.println("*****************************************");
+        System.out.println(alpha);
+        //print out opur decided font size order and format html
+        while (alpha.size() > 0) {
+
+            Map.Pair<String, Integer> pair = alpha.removeFirst();
+            int ttemp = pair.value();
+            int font = ttemp / 10;
+            outToFile.println("<span style=" + '"' + "cursor:default" + '"'
+                    + " class=" + '"' + 'f' + font + '"' + " title=" + '"'
+                    + "count: " + pair.value() + '"' + ">" + pair.key()
+                    + "</span>");
         }
 
-        if (count.size() > 0) {
-            Map.Pair<String, Integer> tempp = count.removeFirst();
-            small = tempp.value();
-            //add number to alphga data stucture
-            alpha.add(count.removeFirst());
-        }
-
+        outToFile.println("</p>");
+        outToFile.println("</div>");
+        outToFile.println("</body>");
+        outToFile.println("</html>");
     }
 
     /**
      * Main method.
      *
      * @param args
-     *            the command line arguments
+     *            the command line arguments; unused here
      */
     public static void main(String[] args) {
         SimpleReader in = new SimpleReader1L();
         SimpleWriter out = new SimpleWriter1L();
 
-        // prompts the user for the input file
-        out.print("Enter the name of an input file: ");
+        out.print("Enter input file name with file extention: ");
         String inputFile = in.nextLine();
+        SimpleReader input = new SimpleReader1L(inputFile);
 
-        if (inputFile.substring(inputFile.length() - 5, inputFile.length() - 1)
-                .equals(".txt")) {
-            out.print("Invaild input file name");
-        } else {
-            // prompts the user for the output folder name
-            out.print("Input the name of an output file: ");
-            String outputFile = in.nextLine();
+        out.print("Enter output file name with extension: ");
+        String outputFile = in.nextLine();
+        SimpleWriter outToFile = new SimpleWriter1L(outputFile);
 
-            /*
-             * wordAndCount: Map used to store words and the occurrence from the
-             * input file
-             */
-            Map<String, Integer> wordAndCount = new Map1L<>();
+        Comparator<Map.Pair<String, Integer>> ci = new IntegerLT();
+        SortingMachine<Map.Pair<String, Integer>> count = new SortingMachine1L<Map.Pair<String, Integer>>(
+                ci);
 
-            // stores all the words in Queue
-            generateQueue(inputFile, separatedWord);
+        Comparator<Map.Pair<String, Integer>> cii = new StringLT();
+        SortingMachine<Map.Pair<String, Integer>> alpha = new SortingMachine1L<Map.Pair<String, Integer>>(
+                cii);
 
-            // makes the words in the Queue in lexicographical order
-            lexicographicalOrder(separatedWord);
+        printContentToFile(outToFile, input, inputFile, count, alpha);
 
-            // stores top 100 words in the new Map
-            generateMap(separatedWord, wordAndCount);
-
-            //Queue<String> separatedWord = new Queue1L<>();
-
-            Comparator<Map.Pair<String, Integer>> ci = new IntegerLT();
-            SortingMachine<Map.Pair<String, Integer>> count = new SortingMachine1L<Map.Pair<String, Integer>>(
-                    ci);
-
-            Comparator<Map.Pair<String, Integer>> cii = new StringLT();
-            SortingMachine<Map.Pair<String, Integer>> alpha = new SortingMachine1L<Map.Pair<String, Integer>>(
-                    cii);
-
-            SimpleWriter output = new SimpleWriter1L(outputFile);
-
-            // writes an html file with the correct format
-            printPage(output, separatedWord, wordAndCount, inputFile);
-        }
+        out.print("Done printing to file!");
 
         in.close();
         out.close();
     }
+
 }
