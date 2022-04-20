@@ -2,6 +2,7 @@ import java.util.Comparator;
 
 import components.map.Map;
 import components.map.Map1L;
+import components.queue.Queue;
 import components.set.Set;
 import components.set.Set1L;
 import components.simplereader.SimpleReader;
@@ -12,56 +13,36 @@ import components.sortingmachine.SortingMachine;
 import components.sortingmachine.SortingMachine1L;
 
 /**
- * Reads the words from an input file and outputs the top 100 occurrence words
- * and bigger the font size if the count is bigger.
+ * Put a short phrase describing the program here.
  *
- * @author Sungwoon Park and Tony Liou
- * 
- * *************************************************************************
- * ALSO CHANGE ALL COMMENTS AND CONTRACTS
- * 
+ * @author Put your name here
  *
  */
 public final class TagCloudGenerator {
 
     /**
-     * Global int difference variable
-     */
-    private static final int DIFFERENCE = 37;
-    /**
-     * Global int minimum variable
-     */
-    private static final int MINIMUM = 11;
-
-    /**
      * Compare {@code String}s in alphabetical order.
      */
-    private static class StringAlpha
+    private static class StringLT
             implements Comparator<Map.Pair<String, Integer>> {
         @Override
         public int compare(Map.Pair<String, Integer> o1,
                 Map.Pair<String, Integer> o2) {
-            if (o1.key().compareTo(o2.key()) == 0) {
-                return o1.value().compareTo(o2.value());
-            } else {
-                return o1.key().compareToIgnoreCase(o2.key());
-            }
+            //use the value (the number) from the map to compare
+            return o1.value().compareTo(o2.value());
         }
     }
 
     /**
-     * Compare {@code String}s in decreasing order.
+     * Compare {@code String}s in alphabetical order.
      */
     private static class IntegerLT
             implements Comparator<Map.Pair<String, Integer>> {
         @Override
         public int compare(Map.Pair<String, Integer> o1,
                 Map.Pair<String, Integer> o2) {
-            if (o1.value().compareTo(o2.value()) == 0) {
-                return o2.key().compareTo(o1.key());
-            }
             //use the value (the number) from the map to compare
-            return o2.value().compareTo(o1.value());
+            return o1.key().compareTo(o2.key());
         }
     }
 
@@ -142,7 +123,7 @@ public final class TagCloudGenerator {
     }
 
     /**
-     * Stores all the word in the Queue separatedWord.
+     * Stores all the word in the Queue separatedWord
      *
      * @param inputFile
      *            name of the input file
@@ -152,8 +133,8 @@ public final class TagCloudGenerator {
      *           separatedWord to be empty
      * @ensures every word in the file to be in the Queue separatedWord
      */
-    private static void generateMap(String inputFile,
-            Map<String, Integer> map) {
+    private static void generateQueue(String inputFile,
+            Queue<String> separatedWord) {
         SimpleReader input = new SimpleReader1L(inputFile);
 
         // sepString is all the possible separators
@@ -166,89 +147,80 @@ public final class TagCloudGenerator {
 
         while (!input.atEOS()) {
             // wordsWithSep: one line from the input file
-            String wordsWithSep = input.nextLine().toLowerCase();
+            String wordsWithSep = input.nextLine();
             int lengthOfLine = wordsWithSep.length();
             String value = "";
             int pos = 0;
+
             while (pos < lengthOfLine) {
                 value = nextWordOrSeparator(wordsWithSep, pos, separators);
+
                 // stores the value to the queue if it is not a separator
                 if (!separators.contains(value.charAt(0))) {
-
-                    // if the word was already stored to the Map
-                    if (map.hasKey(value)) {
-                        int numUsed = map.value(value);
-                        // add one to the value
-                        int updated = numUsed + 1;
-                        map.replaceValue(value, updated);
-                    } else {
-                        // if the word was not stored to the Map
-                        map.add(value, 1);
-                    }
+                    separatedWord.enqueue(value);
                 }
+
                 pos += value.length();
-
             }
         }
-        input.close();
     }
 
     /**
-     * Sorts the Map into a decreasing order of count with user defined number
-     * of count in alphabetical order.
+     * Makes the Queue words in the lexicographic order
      *
-     * @param count
-     *            the SortingMachine
-     * @param alphabet
-     *            the SortingMachine
-     * @param num
-     *            the integer
-     * @param wordAndCount
-     *            the map
-     * @requires Map is not empty
-     * @ensures Modifies the Map into a decreasing order for the value of count
-     * @return Sorted map in a decreasing order
+     * @param words
+     *            the queue
+     * @requires Queue words to be empty
+     * @ensures the String elements in the Queue words is in lexicographic order
      */
-    private static int[] sortMap(
-            SortingMachine<Map.Pair<String, Integer>> count,
-            SortingMachine<Map.Pair<String, Integer>> alphabet, int num,
-            Map<String, Integer> wordAndCount) {
+    private static void lexicographicalOrder(Queue<String> words) {
+        /*
+         * Sort lines into non-decreasing lexicographic order
+         */
+        Comparator<String> cs = new StringLT();
+        words.sort(cs);
 
-        while (wordAndCount.size() != 0) {
-            count.add(wordAndCount.removeAny());
-        }
-        count.changeToExtractionMode();
-
-        int length = count.size();
-        int maxCount = 0;
-        int minCount = 0;
-        for (int i = 0; i < length && i < num; i++) {
-            Map.Pair<String, Integer> pair = count.removeFirst();
-            if (i == 0) {
-                maxCount = pair.value();
-            }
-            if (i == num - 1) {
-                minCount = pair.value();
-            }
-            alphabet.add(pair);
-        }
-
-        // stores the max count and min count into the array
-        int[] maxMinArray = new int[2];
-        maxMinArray[0] = maxCount;
-        maxMinArray[1] = minCount;
-
-//        alphabet.changeToExtractionMode();
-//        while (alphabet.size() != 0) {
-//            Map.Pair<String, Integer> pair = alphabet.removeFirst();
-//            wordAndCount.add(pair.key(), pair.value());
-//        }
-
-        return maxMinArray;
     }
 
     /**
-     * Generates the html file.
+     * Stores the word and the corresponding occurrence to the Map
+     *
+     * @param words
+     *            the queue
+     * @param map
+     *            the word -> the occurrence
+     * @requires Map words to be empty
+     * @ensures [map contains word -> number of occurrence]
+     */
+    private static void generateMap(Queue<String> words,
+            Map<String, Integer> map) {
+        // numberOfWords: # of words in the given input file
+        int numberOfWords = words.length();
+        // wordUsed: used to figure out if the word is already in the Map or not
+        boolean wordUsed = false;
+
+        for (int i = 0; i < numberOfWords; i++) {
+            String oneWord = words.dequeue();
+            wordUsed = map.hasKey(oneWord);
+
+            // if the word was already stored to the Map
+            if (wordUsed) {
+                int numUsed = map.value(oneWord);
+                // add one to the value
+                int updated = numUsed + 1;
+                map.replaceValue(oneWord, updated);
+            }
+            // if the word was not stored to the Map
+            else {
+                map.add(oneWord, 1);
+            }
+            // place back the taken out word
+            words.enqueue(oneWord);
+        }
+    }
+
+    /**
+     * Generates the html file
      *
      * @param output
      *            the output stream to write the html codes
@@ -256,60 +228,71 @@ public final class TagCloudGenerator {
      *            the queue
      * @param map
      *            the map
-     * @param maxMin
-     *            the array
-     * @param num
-     *            the integer
      * @param inputFile
      *            user input file
-     * @requires Queue words, Map map, and maxMin is not empty
+     * @requires Queue words has String elements in it
      * @ensures generates the correct html formated file to the user inputed
      *          output file
      */
-    private static void printPage(SimpleWriter output,
-            SortingMachine<Map.Pair<String, Integer>> alphabet, int[] maxMin,
-            int num, String inputFile) {
+    private static void printPage(SimpleWriter output, Queue<String> words,
+            Map<String, Integer> map, String inputFile,
+            SortingMachine<Map.Pair<String, Integer>> count,
+            SortingMachine<Map.Pair<String, Integer>> alpha) {
 
         output.println("<html>");
         output.println("<head>");
         output.println("<title>Project9</title>");
-        output.println(
-                "<link href=\"http://web.cse.ohio-state.edu/software/2231"
-                        + "/web-sw2/assignments/projects/tag-cloud-generator/data"
-                        + "/tagcloud.css\" rel=\"stylesheet\" type=\"text/css\">\r\n"
-                        + "<link href=\"tagcloud.css\" rel=\"stylesheet\" type="
-                        + "\"text/css\">");
+        output.println("<link href=" + '"' + "doc/tagcloud.css" + '"' + " rel="
+                + '"' + "stylesheet" + '"' + " type =" + '"' + "text/css" + '"'
+                + ">");
+
         output.println("</head>");
         output.println("<body>");
         // includes the name of the input file at the header
-        output.println("<h2> Top" + num + "words in " + inputFile + "</h2>");
-        output.println("<hr>");
-        output.println("<div class=\"cdiv\">");
+        output.println("<h2> Top 100 words in " + inputFile + "</h2>");
         output.println("<p class =" + '"' + "cbox" + '"' + ">");
 
-        alphabet.changeToExtractionMode();
-        // iterate user input num times
-        while (alphabet.size() != 0) {
-            Map.Pair<String, Integer> pair = alphabet.removeFirst();
-            int maxCount = maxMin[0];
-            int minCount = maxMin[1];
-
-            int currentCount = pair.value();
-            int fontSize = 0;
-            if (maxCount == minCount) {
-                fontSize = 20;
-            } else {
-                fontSize = ((currentCount - minCount) * DIFFERENCE)
-                        / (maxCount - minCount) + MINIMUM;
-            }
-            output.println("<span style=\"cursor:default\" class=\"f" + fontSize
-                    + "\" title=\"count: " + pair.value() + "\">" + pair.key()
+        //print out opur decided font size order and format html
+        while (alpha.size() > 0) {
+            Map.Pair<String, Integer> pair = alpha.removeFirst();
+            int ttemp = pair.value();
+            int font = ttemp / 10;
+            output.println("<span style=" + '"' + "cursor:default" + '"'
+                    + " class=" + '"' + 'f' + font + '"' + " title=" + '"'
+                    + "count: " + pair.value() + '"' + ">" + pair.key()
                     + "</span>");
         }
+
         output.println("</p>");
         output.println("</div>");
         output.println("</body>");
         output.println("</html>");
+
+    }
+
+    private static void sortingMachineProcessor(
+            SortingMachine<Map.Pair<String, Integer>> count,
+            SortingMachine<Map.Pair<String, Integer>> alpha,
+            Map<String, Integer> wordAndCount, SimpleWriter output) {
+
+        //add the extration mode from map
+        int length = count.size();
+        for (int i = 0; i < length; i++) {
+            count.add(wordAndCount.removeAny());
+        }
+
+        //now we need to sort the sortitng machine
+        count.changeToExtractionMode();
+
+        //add number to alphga data stucture
+        alpha.add(count.removeFirst());
+
+        //add the elements to alpha in order
+        int length2 = count.size();
+        for (int i = 0; i < length2; i++) {
+            alpha.add(count.removeFirst());
+        }
+
     }
 
     /**
@@ -326,18 +309,14 @@ public final class TagCloudGenerator {
         out.print("Enter the name of an input file: ");
         String inputFile = in.nextLine();
 
-        if (inputFile.isEmpty() || inputFile.length() <= 4
-                || (!inputFile
-                        .substring(inputFile.length() - 4, inputFile.length())
-                        .equals(".txt"))) {
+        if (inputFile.substring(inputFile.length() - 5, inputFile.length() - 1)
+                .equals(".txt")) {
             out.print("Invaild input file name");
         } else {
             // prompts the user for the output folder name
             out.print("Input the name of an output file: ");
             String outputFile = in.nextLine();
 
-            // separatedWord: Queue used to store words from the input file
-            //  Queue<String> separatedWord = new Queue1L<>();
             /*
              * wordAndCount: Map used to store words and the occurrence from the
              * input file
@@ -345,40 +324,28 @@ public final class TagCloudGenerator {
             Map<String, Integer> wordAndCount = new Map1L<>();
 
             // stores all the words in Queue
-            //generateQueue(inputFile, separatedWord);
+            generateQueue(inputFile, separatedWord);
 
             // makes the words in the Queue in lexicographical order
-            // lexicographicalOrder(separatedWord);
+            lexicographicalOrder(separatedWord);
 
-            // stores the words and its count to the Map
-            generateMap(inputFile, wordAndCount);
+            // stores top 100 words in the new Map
+            generateMap(separatedWord, wordAndCount);
 
-            Comparator<Map.Pair<String, Integer>> ci1 = new IntegerLT();
+            //Queue<String> separatedWord = new Queue1L<>();
+
+            Comparator<Map.Pair<String, Integer>> ci = new IntegerLT();
             SortingMachine<Map.Pair<String, Integer>> count = new SortingMachine1L<Map.Pair<String, Integer>>(
-                    ci1);
-            Comparator<Map.Pair<String, Integer>> ci2 = new StringAlpha();
-            SortingMachine<Map.Pair<String, Integer>> alphabet = new SortingMachine1L<Map.Pair<String, Integer>>(
-                    ci2);
+                    ci);
 
-            // number of the total words
-            int numWords = wordAndCount.size();
-            // prompt the user for the number of words
-            out.println("Enter the number of words: ");
-            int num = in.nextInteger();
-
-            while (num > numWords) {
-                out.println("Re-enter a smaller number of words: ");
-                num = in.nextInteger();
-            }
-            /*
-             * sorts the Map into a decreasing order of count and top 100 in
-             * alphabetical order
-             */
-            int[] maxMin = sortMap(count, alphabet, num, wordAndCount);
+            Comparator<Map.Pair<String, Integer>> cii = new StringLT();
+            SortingMachine<Map.Pair<String, Integer>> alpha = new SortingMachine1L<Map.Pair<String, Integer>>(
+                    cii);
 
             SimpleWriter output = new SimpleWriter1L(outputFile);
+
             // writes an html file with the correct format
-            printPage(output, alphabet, maxMin, num, inputFile);
+            printPage(output, separatedWord, wordAndCount, inputFile);
         }
 
         in.close();
