@@ -732,5 +732,3 @@ public final class TagCloudGenerator {
         out.close();
     }
 }
-
-}
